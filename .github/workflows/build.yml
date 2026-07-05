@@ -33,7 +33,12 @@ jobs:
           sudo apt-get update
           # rpmbuild for .rpm; dpkg-deb ships on ubuntu for .deb; AppImage is
           # self-contained. (snap/flatpak tooling omitted — those targets are deferred.)
-          sudo apt-get install -y rpm elfutils libarchive-tools
+          # ruby + gem fpm: electron-builder's bundled fpm is x86-only and can't
+          # run on the arm64 runner (Exec format error) — install a native fpm
+          # and force USE_SYSTEM_FPM at build time.
+          sudo apt-get install -y rpm elfutils libarchive-tools ruby ruby-dev build-essential
+          sudo gem install --no-document fpm
+          fpm --version
 
       - run: npm install --no-audit --no-fund
 
@@ -53,6 +58,9 @@ jobs:
 
       - name: Build (${{ matrix.arch }})
         working-directory: apps/perseochat
+        env:
+          # use the natively-installed fpm, not electron-builder's x86-only one
+          USE_SYSTEM_FPM: "true"
         run: |
           EV=$(node -p "require('electron/package.json').version")
           npx electron-builder --linux --${{ matrix.arch }} -c.electronVersion=$EV
