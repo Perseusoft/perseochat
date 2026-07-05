@@ -21,3 +21,6 @@ out/
 *.secret
 .env*
 credentials*
+
+# lockfile is regenerated in CI (local hardened npm corrupts app-builder-bin)
+package-lock.json

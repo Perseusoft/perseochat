@@ -27,7 +27,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
 
       - name: Install packaging tooling
         run: |
@@ -38,7 +37,7 @@ jobs:
             org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08 || true
           sudo snap install snapcraft --classic || sudo apt-get install -y snapcraft
 
-      - run: npm ci
+      - run: npm install --no-audit --no-fund
 
       - name: Build (${{ matrix.arch }})
         working-directory: apps/perseochat
