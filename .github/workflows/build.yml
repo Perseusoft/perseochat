@@ -31,6 +31,7 @@ jobs:
       - name: Install packaging tooling
         run: |
           sudo apt-get update
+          sudo apt-get install -y rpm flatpak flatpak-builder elfutils libarchive-tools p7zip-full p7zip 7zip || \
           sudo apt-get install -y rpm flatpak flatpak-builder elfutils libarchive-tools p7zip-full p7zip
           sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
           sudo flatpak install -y flathub org.electronjs.Electron2.BaseApp//24.08 \
@@ -39,16 +40,19 @@ jobs:
 
       - run: npm install --no-audit --no-fund
 
-      # npm sometimes doesn't materialise electron-builder's bundled binaries in
-      # CI — point them at the system 7-Zip so the file always exists.
+      # npm doesn't materialise electron-builder's bundled 7za binary in CI —
+      # copy the real system 7-Zip binary into the exact path it chmods.
       - name: Ensure 7za binary
         run: |
-          SYS7=$(command -v 7za || command -v 7zr || command -v 7z)
+          set -euo pipefail
+          SYS7="$(command -v 7za || command -v 7zz || command -v 7zr || command -v 7z || true)"
+          if [ -z "$SYS7" ]; then echo "::error::no system 7-Zip binary found"; exit 1; fi
+          echo "using system 7-Zip: $SYS7"
           D="node_modules/7zip-bin/linux/${{ matrix.arch }}"
           mkdir -p "$D"
-          ln -sf "$SYS7" "$D/7za"
-          chmod +x "$SYS7" "$D/7za" || true
+          install -m 0755 "$SYS7" "$D/7za"
           ls -l "$D/7za"
+          "$D/7za" --help >/dev/null && echo "7za OK"
 
       - name: Build (${{ matrix.arch }})
         working-directory: apps/perseochat
