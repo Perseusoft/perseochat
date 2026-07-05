@@ -6,6 +6,7 @@
   "description": "PerseoChat — unified messaging + AI hub for Linux, by PerseuSoft",
   "author": "PerseuSoft <hola@perseusoft.tech>",
   "homepage": "https://perseusoft.tech",
+  "license": "LicenseRef-proprietary",
   "main": "main.js",
   "scripts": {
     "dev": "electron .",

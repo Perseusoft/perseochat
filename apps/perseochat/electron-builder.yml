@@ -10,8 +10,16 @@ files:
   - main.js
   - node_modules/@perseochat/shell/**/*
 linux:
+  # clean binary/desktop/icon basename (default derived "@perseochatapp" from the
+  # scoped package name and looked wrong in software centers).
+  executableName: perseochat
   category: Network;InstantMessaging;Chat
   icon: build/icon.png
+  # electron-builder 24 merges these flat into the .desktop entry; Name and
+  # StartupWMClass already default to the product name.
+  desktop:
+    GenericName: Messaging & AI hub
+    Keywords: chat;messaging;slack;teams;discord;whatsapp;telegram;ai;
   synopsis: Unified messaging + AI hub for Linux
   description: >-
     PerseoChat bundles Slack, Teams, Discord, WhatsApp, Telegram and AI chats
@@ -31,17 +39,17 @@ linux:
     - deb
     - rpm
     - AppImage
+# AppStream metainfo gives software centers (GNOME Software, KDE Discover,
+# GearLever) the real app name, developer and license instead of the filename /
+# "Unknown author". Installed to the standard system path via raw fpm mappings.
 deb:
   depends:
     - libnotify4
     - libxtst6
     - libnss3
     - libsecret-1-0
-snap:
-  confinement: strict
-  plugs:
-    - default
-    - screen-inhibit-control
-    - audio-playback
-    - audio-record
-    - password-manager-service
+  fpm:
+    - "build/tech.perseusoft.PerseoChat.metainfo.xml=/usr/share/metainfo/tech.perseusoft.PerseoChat.metainfo.xml"
+rpm:
+  fpm:
+    - "build/tech.perseusoft.PerseoChat.metainfo.xml=/usr/share/metainfo/tech.perseusoft.PerseoChat.metainfo.xml"
