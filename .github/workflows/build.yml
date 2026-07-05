@@ -58,7 +58,13 @@ jobs:
         working-directory: apps/perseochat
         run: |
           EV=$(node -p "require('electron/package.json').version")
-          npx electron-builder --linux --${{ matrix.arch }} -c.electronVersion=$EV
+          echo "7za before build:"; ls -l ../../node_modules/7zip-bin/linux/${{ matrix.arch }}/ || true
+          # npmRebuild=false stops electron-builder from running its own
+          # `npm install --production`, which in an npm-workspace prunes root
+          # devDeps (7zip-bin) and deletes the 7za we just staged.
+          npx electron-builder --linux --${{ matrix.arch }} \
+            -c.electronVersion=$EV -c.npmRebuild=false
+          echo "7za after build:"; ls -l ../../node_modules/7zip-bin/linux/${{ matrix.arch }}/ || true
 
       - name: Collect artifacts
         run: |
