@@ -31,13 +31,24 @@ jobs:
       - name: Install packaging tooling
         run: |
           sudo apt-get update
-          sudo apt-get install -y rpm flatpak flatpak-builder elfutils libarchive-tools
+          sudo apt-get install -y rpm flatpak flatpak-builder elfutils libarchive-tools p7zip-full p7zip
           sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
           sudo flatpak install -y flathub org.electronjs.Electron2.BaseApp//24.08 \
             org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08 || true
           sudo snap install snapcraft --classic || sudo apt-get install -y snapcraft
 
       - run: npm install --no-audit --no-fund
+
+      # npm sometimes doesn't materialise electron-builder's bundled binaries in
+      # CI — point them at the system 7-Zip so the file always exists.
+      - name: Ensure 7za binary
+        run: |
+          SYS7=$(command -v 7za || command -v 7zr || command -v 7z)
+          D="node_modules/7zip-bin/linux/${{ matrix.arch }}"
+          mkdir -p "$D"
+          ln -sf "$SYS7" "$D/7za"
+          chmod +x "$SYS7" "$D/7za" || true
+          ls -l "$D/7za"
 
       - name: Build (${{ matrix.arch }})
         working-directory: apps/perseochat
