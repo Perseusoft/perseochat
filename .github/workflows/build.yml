@@ -87,27 +87,36 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: auto
-          R2_ENDPOINT: https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           BUCKET: perseochat-storage
           REF_NAME: ${{ github.ref_name }}
+          ARCH: ${{ matrix.arch }}
         run: |
           set -euo pipefail
           # Fail loudly if credentials are missing (empty secrets = silent no-op).
           : "${AWS_ACCESS_KEY_ID:?R2_ACCESS_KEY_ID secret is empty}"
           : "${AWS_SECRET_ACCESS_KEY:?R2_SECRET_ACCESS_KEY secret is empty}"
           command -v aws >/dev/null || { echo "installing aws cli"; sudo apt-get install -y awscli || pip install awscli; }
+          # Accept the R2_ACCOUNT_ID secret as a bare id OR a full endpoint URL:
+          # strip any protocol and the r2 domain, leaving just the account hex.
+          ACC="$R2_ACCOUNT_ID"; ACC="${ACC#http://}"; ACC="${ACC#https://}"
+          ACC="${ACC%%.r2.cloudflarestorage.com*}"; ACC="${ACC%%/*}"
+          R2_ENDPOINT="https://${ACC}.r2.cloudflarestorage.com"
+          echo "==> endpoint: $R2_ENDPOINT"
           VER=$(node -p "require('./apps/perseochat/package.json').version")
           # tag push -> use the tag; manual run -> v<version>
           case "$GITHUB_REF" in refs/tags/*) TAG="$REF_NAME";; *) TAG="v$VER";; esac
-          echo "==> uploading $(ls out | wc -l) files to bucket=$BUCKET tag=$TAG arch=${{ matrix.arch }}"
+          echo "==> uploading $(ls out | wc -l) files to bucket=$BUCKET tag=$TAG arch=$ARCH"
           ls -la out
-          # Versioned artifacts: releases/<tag>/<arch>/PerseoChat-<ver>-<arch>.<ext>
-          aws s3 cp out/ "s3://$BUCKET/releases/$TAG/${{ matrix.arch }}/" \
+          # Versioned artifacts keep their real names: releases/<tag>/<arch>/…
+          aws s3 cp out/ "s3://$BUCKET/releases/$TAG/$ARCH/" \
             --recursive --endpoint-url "$R2_ENDPOINT" --checksum-algorithm CRC32
-          # Stable "latest" links (version stripped): latest/<arch>/PerseoChat-<arch>.<ext>
+          # Stable "latest" links with canonical names matching the README:
+          # latest/<arch>/PerseoChat-<arch>.<ext>  (electron-builder's own names
+          # vary per format — amd64/x86_64 — so we rename to the matrix arch).
           mkdir -p latest
-          for f in out/*; do b=$(basename "$f"); cp "$f" "latest/${b/-$VER/}"; done
-          aws s3 cp latest/ "s3://$BUCKET/latest/${{ matrix.arch }}/" \
+          for f in out/*; do ext="${f##*.}"; cp "$f" "latest/PerseoChat-$ARCH.$ext"; done
+          aws s3 cp latest/ "s3://$BUCKET/latest/$ARCH/" \
             --recursive --endpoint-url "$R2_ENDPOINT" --checksum-algorithm CRC32
-          echo "==> done. verifying:"
-          aws s3 ls "s3://$BUCKET/latest/${{ matrix.arch }}/" --endpoint-url "$R2_ENDPOINT"
+          echo "==> done. bucket now has:"
+          aws s3 ls "s3://$BUCKET/latest/$ARCH/" --endpoint-url "$R2_ENDPOINT"
