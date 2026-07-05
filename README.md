@@ -78,11 +78,11 @@ are sandboxed.
 
 | Format | x86_64 | aarch64 (ARM64) |
 | :-- | :--: | :--: |
-| **AppImage** — portable, any distro | [⬇ Download](https://get.perseusoft.tech/perseochat/latest/x64/PerseoChat-x64.AppImage) | [⬇ Download](https://get.perseusoft.tech/perseochat/latest/arm64/PerseoChat-arm64.AppImage) |
-| **Debian / Ubuntu** — `.deb` | [⬇ Download](https://get.perseusoft.tech/perseochat/latest/x64/PerseoChat-x64.deb) | [⬇ Download](https://get.perseusoft.tech/perseochat/latest/arm64/PerseoChat-arm64.deb) |
-| **Fedora / RHEL / openSUSE** — `.rpm` | [⬇ Download](https://get.perseusoft.tech/perseochat/latest/x64/PerseoChat-x64.rpm) | [⬇ Download](https://get.perseusoft.tech/perseochat/latest/arm64/PerseoChat-arm64.rpm) |
-| **Snap** — `.snap` | [⬇ Download](https://get.perseusoft.tech/perseochat/latest/x64/PerseoChat-x64.snap) | [⬇ Download](https://get.perseusoft.tech/perseochat/latest/arm64/PerseoChat-arm64.snap) |
-| **Flatpak** — `.flatpak` | [⬇ Download](https://get.perseusoft.tech/perseochat/latest/x64/PerseoChat-x64.flatpak) | [⬇ Download](https://get.perseusoft.tech/perseochat/latest/arm64/PerseoChat-arm64.flatpak) |
+| **AppImage** — portable, any distro | [⬇ Download](https://get.perseusoft.tech/latest/x64/PerseoChat-x64.AppImage) | [⬇ Download](https://get.perseusoft.tech/latest/arm64/PerseoChat-arm64.AppImage) |
+| **Debian / Ubuntu** — `.deb` | [⬇ Download](https://get.perseusoft.tech/latest/x64/PerseoChat-x64.deb) | [⬇ Download](https://get.perseusoft.tech/latest/arm64/PerseoChat-arm64.deb) |
+| **Fedora / RHEL / openSUSE** — `.rpm` | [⬇ Download](https://get.perseusoft.tech/latest/x64/PerseoChat-x64.rpm) | [⬇ Download](https://get.perseusoft.tech/latest/arm64/PerseoChat-arm64.rpm) |
+| **Snap** — `.snap` | [⬇ Download](https://get.perseusoft.tech/latest/x64/PerseoChat-x64.snap) | [⬇ Download](https://get.perseusoft.tech/latest/arm64/PerseoChat-arm64.snap) |
+| **Flatpak** — `.flatpak` | [⬇ Download](https://get.perseusoft.tech/latest/x64/PerseoChat-x64.flatpak) | [⬇ Download](https://get.perseusoft.tech/latest/arm64/PerseoChat-arm64.flatpak) |
 
 *Windows & macOS builds are coming — see [Platforms](#platforms).*
 
