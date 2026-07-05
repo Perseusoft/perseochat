@@ -79,17 +79,28 @@ jobs:
           path: out/*
           if-no-files-found: error
 
+      # Publish on a tag push (releases/<tag>/…) OR a manual run (releases/v<ver>/…).
+      # Either way it refreshes latest/. Skipped only for non-tag branch pushes.
       - name: Upload to Cloudflare R2
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: auto
           R2_ENDPOINT: https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
           BUCKET: perseochat-storage
-          TAG: ${{ github.ref_name }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
+          set -euo pipefail
+          # Fail loudly if credentials are missing (empty secrets = silent no-op).
+          : "${AWS_ACCESS_KEY_ID:?R2_ACCESS_KEY_ID secret is empty}"
+          : "${AWS_SECRET_ACCESS_KEY:?R2_SECRET_ACCESS_KEY secret is empty}"
+          command -v aws >/dev/null || { echo "installing aws cli"; sudo apt-get install -y awscli || pip install awscli; }
           VER=$(node -p "require('./apps/perseochat/package.json').version")
+          # tag push -> use the tag; manual run -> v<version>
+          case "$GITHUB_REF" in refs/tags/*) TAG="$REF_NAME";; *) TAG="v$VER";; esac
+          echo "==> uploading $(ls out | wc -l) files to bucket=$BUCKET tag=$TAG arch=${{ matrix.arch }}"
+          ls -la out
           # Versioned artifacts: releases/<tag>/<arch>/PerseoChat-<ver>-<arch>.<ext>
           aws s3 cp out/ "s3://$BUCKET/releases/$TAG/${{ matrix.arch }}/" \
             --recursive --endpoint-url "$R2_ENDPOINT" --checksum-algorithm CRC32
@@ -98,3 +109,5 @@ jobs:
           for f in out/*; do b=$(basename "$f"); cp "$f" "latest/${b/-$VER/}"; done
           aws s3 cp latest/ "s3://$BUCKET/latest/${{ matrix.arch }}/" \
             --recursive --endpoint-url "$R2_ENDPOINT" --checksum-algorithm CRC32
+          echo "==> done. verifying:"
+          aws s3 ls "s3://$BUCKET/latest/${{ matrix.arch }}/" --endpoint-url "$R2_ENDPOINT"
