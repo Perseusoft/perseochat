@@ -1,6 +1,7 @@
 appId: tech.perseusoft.PerseoChat
 productName: PerseoChat
 copyright: © PerseuSoft
+artifactName: ${productName}-${version}-${arch}.${ext}
 directories:
   output: ../../dist
   buildResources: build

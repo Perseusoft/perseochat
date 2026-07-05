@@ -15,3 +15,9 @@ out/
 # Local agent tooling
 .claude/
 .orion/
+
+# Never commit local credentials
+/r2
+*.secret
+.env*
+credentials*

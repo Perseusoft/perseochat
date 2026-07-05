@@ -70,7 +70,12 @@ jobs:
           BUCKET: perseochat-storage
           TAG: ${{ github.ref_name }}
         run: |
+          VER=$(node -p "require('./apps/perseochat/package.json').version")
+          # Versioned artifacts: releases/<tag>/<arch>/PerseoChat-<ver>-<arch>.<ext>
           aws s3 cp out/ "s3://$BUCKET/releases/$TAG/${{ matrix.arch }}/" \
             --recursive --endpoint-url "$R2_ENDPOINT" --checksum-algorithm CRC32
-          aws s3 cp out/ "s3://$BUCKET/releases/latest/${{ matrix.arch }}/" \
+          # Stable "latest" links (version stripped): latest/<arch>/PerseoChat-<arch>.<ext>
+          mkdir -p latest
+          for f in out/*; do b=$(basename "$f"); cp "$f" "latest/${b/-$VER/}"; done
+          aws s3 cp latest/ "s3://$BUCKET/latest/${{ matrix.arch }}/" \
             --recursive --endpoint-url "$R2_ENDPOINT" --checksum-algorithm CRC32
