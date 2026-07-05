@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="fonts/fonts.css" />
+    <link rel="stylesheet" href="shell.css" />
+  </head>
+  <body data-theme="dark">
+    <div id="app">
+      <header id="titlebar">
+        <div class="tb-left">
+          <button class="tbtn" id="menuBtn" data-i="panel-left" title="Expandir barra"></button>
+          <div class="brand"><img class="brand-badge" src="icons/perseo.png" alt="" /> <span>PerseoChat</span><span id="wsName" class="wsname"></span></div>
+        </div>
+        <div class="tb-center">
+          <button class="searchbar" id="searchBtn">
+            <span class="mag" data-i="search" data-sz="16"></span>
+            <span class="grow">Ir a servicio, mensaje o comando…</span>
+            <kbd>Ctrl K</kbd>
+          </button>
+        </div>
+        <div class="tb-right">
+          <button class="tbtn" id="themeBtn" data-i="moon" title="Tema"></button>
+          <button class="tbtn" id="bellBtn" data-i="bell" title="Notificaciones"><span class="badge-dot" id="bellDot" hidden></span></button>
+          <span class="wsep"></span>
+          <button class="wbtn" id="winMin" data-i="minus"></button>
+          <button class="wbtn" id="winMax" data-i="square" data-sz="14"></button>
+          <button class="wbtn close" id="winClose" data-i="x"></button>
+        </div>
+      </header>
+
+      <div id="body">
+        <nav id="rail">
+          <div id="tiles"></div>
+          <div class="rail-bottom">
+            <button class="addtile" id="addBtn" data-i="plus" data-sz="20" title="Añadir servicio"><span class="lbl">Añadir servicio</span></button>
+            <div class="rail-foot">
+              <button class="railicon" id="spacesBtn" data-i="layout-grid" title="Espacios"></button>
+              <button class="railicon" id="settingsBtn" data-i="settings" title="Ajustes"></button>
+            </div>
+          </div>
+        </nav>
+
+        <main id="stage">
+          <div id="svcHeader" class="hidden">
+            <div class="sh-id">
+              <span class="ic" id="shIcon"></span>
+              <div><div class="sh-name" id="shName"></div><div class="sh-url" id="shUrl"></div></div>
+            </div>
+            <div class="sh-actions">
+              <button data-a="back" data-i="chevron-left" title="Atrás"></button>
+              <button data-a="fwd" data-i="chevron-right" title="Adelante"></button>
+              <button data-a="reload" data-i="rotate-cw" title="Recargar"></button>
+              <span class="sep"></span>
+              <button data-a="mute" id="shMute" data-i="bell" title="Silenciar"></button>
+              <button data-a="popout" data-i="external-link" title="Abrir en ventana"></button>
+              <button data-a="more" data-i="ellipsis-vertical" title="Más"></button>
+            </div>
+          </div>
+          <div id="views"></div>
+          <div id="selbar" hidden></div>
+          <div class="empty" id="empty">
+            <img src="icons/perseo.png" alt="" width="88" height="88" style="opacity:.85;margin-bottom:14px" />
+            <div>Añade un servicio para empezar</div>
+          </div>
+        </main>
+
+        <aside id="notif" hidden>
+          <div class="np-head">
+            <b>Notificaciones</b><span id="npCount">0</span><span class="spacer"></span>
+            <button id="npReadAll" data-i="check" title="Marcar todas leídas"></button>
+            <button id="npClose" data-i="x" title="Cerrar"></button>
+          </div>
+          <div class="np-dnd" id="npDnd" hidden>
+            No molestar activo — las alertas están en pausa.
+            <button id="dndOff">Desactivar</button>
+          </div>
+          <div id="npList"></div>
+        </aside>
+      </div>
+    </div>
+
+    <div class="overlay" id="addModal" hidden></div>
+    <div class="overlay top" id="palette" hidden></div>
+    <div class="overlay" id="ask" hidden></div>
+    <div id="ctx" hidden></div>
+
+    <div id="splash">
+      <img src="icons/perseo.png" alt="" width="100" height="100" />
+      <div class="splash-name">PerseoChat</div>
+      <div class="splash-bar"><span></span></div>
+    </div>
+
+    <script src="icons.js"></script>
+    <script src="i18n.js"></script>
+    <script src="shell.js"></script>
+  </body>
+</html>

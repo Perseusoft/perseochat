@@ -1,0 +1,44 @@
+appId: tech.perseusoft.PerseoChat
+productName: PerseoChat
+copyright: © PerseuSoft
+directories:
+  output: ../../dist
+  buildResources: build
+# Bundle the workspace shell (electron-builder won't traverse the symlink).
+files:
+  - main.js
+  - node_modules/@perseochat/shell/**/*
+linux:
+  category: Network;InstantMessaging;Chat
+  icon: build/icon.png
+  synopsis: Unified messaging + AI hub for Linux
+  description: >-
+    PerseoChat bundles Slack, Teams, Discord, WhatsApp, Telegram and AI chats
+    (Claude, ChatGPT, Gemini…) into one native app with isolated per-account
+    sessions and persistent workspaces. By PerseuSoft.
+  # --disable-gpu: Asahi's GPU stack can't allocate Chromium scanout GBM buffers
+  # under Wayland yet; software compositing is smooth.
+  executableArgs:
+    - "--ozone-platform-hint=auto"
+    - "--enable-features=WebRTCPipeWireCapturer"
+    - "--disable-gpu"
+  target:
+    - deb
+    - rpm
+    - AppImage
+    - snap
+    - flatpak
+deb:
+  depends:
+    - libnotify4
+    - libxtst6
+    - libnss3
+    - libsecret-1-0
+snap:
+  confinement: strict
+  plugs:
+    - default
+    - screen-inhibit-control
+    - audio-playback
+    - audio-record
+    - password-manager-service

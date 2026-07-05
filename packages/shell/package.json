@@ -1,0 +1,8 @@
+{
+  "name": "@perseochat/shell",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PerseoChat shell: unified messaging hub engine (Ferdium-style, per-service isolated sessions)",
+  "main": "src/hub.js",
+  "license": "UNLICENSED"
+}

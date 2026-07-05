@@ -1,0 +1,24 @@
+{
+  "name": "perseochat",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PerseoChat — unified messaging + AI hub for Linux (Slack, Teams, Discord, WhatsApp, Telegram, Claude, ChatGPT, Gemini…), by PerseuSoft",
+  "author": "PerseuSoft <hola@perseusoft.tech>",
+  "homepage": "https://perseusoft.tech",
+  "license": "UNLICENSED",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @perseochat/app",
+    "dist": "npm run dist -w @perseochat/app"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "allowScripts": {
+    "electron@33.4.11": true
+  }
+}

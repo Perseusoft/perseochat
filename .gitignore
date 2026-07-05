@@ -1,0 +1,17 @@
+node_modules/
+dist/
+out/
+*.log
+
+# IDE
+.idea/
+*.iml
+
+# OrionOps (auto-added by orion setup)
+.env.orion
+.mcp.json
+.claude/settings.local.json
+
+# Local agent tooling
+.claude/
+.orion/

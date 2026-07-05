@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;padding:0;height:100%;background:#060912;font-family:'Public Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  *{box-sizing:border-box;}
+  button{font-family:inherit;}
+  ::-webkit-scrollbar{width:10px;height:10px;}
+  ::-webkit-scrollbar-thumb{background:rgba(120,140,190,.30);border-radius:8px;border:2px solid transparent;background-clip:content-box;}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(120,140,190,.5);background-clip:content-box;}
+  @keyframes pc-slide{from{transform:translateX(24px);opacity:0}to{transform:translateX(0);opacity:1}}
+  @keyframes pc-fade{from{opacity:0}to{opacity:1}}
+  @keyframes pc-pop{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+</style>
+</helmet>
+
+<div style="width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 20% 0%,#0E1A33 0%,#0A1120 55%,#060912 100%);padding:min(3vw,34px);overflow:hidden;">
+<div style="{{ themeVars }}">
+<div style="width:100%;max-width:1360px;height:100%;max-height:880px;display:flex;flex-direction:column;border-radius:14px;overflow:hidden;position:relative;background:var(--bg,#1a1612);box-shadow:0 30px 80px -20px rgba(0,0,0,.7),0 0 0 1px var(--border,rgba(255,255,255,.08));color:var(--text,#f5f0e8);">
+
+  <!-- ===== HEADER / TITLEBAR ===== -->
+  <div style="height:46px;flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:0 8px 0 10px;background:var(--header,#14100c);border-bottom:1px solid var(--border,rgba(255,255,255,.08));">
+    <button onClick="{{ toggleRail }}" title="Colapsar/expandir" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:none;background:transparent;color:var(--dim,#bcb2a3);cursor:pointer;" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ icons.menu }}</button>
+    <div style="display:flex;align-items:center;gap:8px;padding-right:8px;">
+      {{ brandMark }}
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;letter-spacing:-.01em;">Perseo<span style="color:var(--accent);">Chat</span></span>
+    </div>
+
+    <div style="flex:1;display:flex;justify-content:center;min-width:0;">
+      <button onClick="{{ openServices }}" style="width:100%;max-width:520px;height:32px;display:flex;align-items:center;gap:9px;padding:0 12px;border-radius:9px;border:1px solid var(--border,rgba(255,255,255,.08));background:var(--surface2,#2a241c);color:var(--mute,#857b6c);cursor:pointer;" style-hover="border-color:var(--border2,rgba(255,255,255,.14))">
+        <span style="display:flex;color:var(--mute,#857b6c);">{{ icons.search }}</span>
+        <span style="flex:1;text-align:left;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Ir a servicio, mensaje o comando…</span>
+        <kbd style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;padding:2px 6px;border-radius:5px;background:var(--hover,rgba(255,255,255,.06));border:1px solid var(--border,rgba(255,255,255,.08));color:var(--dim,#bcb2a3);">Ctrl K</kbd>
+      </button>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:3px;">
+      <button onClick="{{ toggleDnd }}" title="No molestar" style="{{ dndBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ icons.moon }}</button>
+      <button onClick="{{ openNotifs }}" title="Notificaciones" style="position:relative;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:none;background:transparent;color:var(--dim,#bcb2a3);cursor:pointer;" style-hover="background:var(--hover,rgba(255,255,255,.06))">
+        {{ icons.bell }}
+        <sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ true }}"><span style="{{ headerBadgeStyle }}">{{ countStr }}</span></sc-if>
+      </button>
+      <div style="width:1px;height:20px;background:var(--border,rgba(255,255,255,.08));margin:0 5px;"></div>
+      <button title="Minimizar" style="{{ winBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ icons.min }}</button>
+      <button title="Maximizar" style="{{ winBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ icons.max }}</button>
+      <button title="Cerrar" style="{{ winBtnStyle }}" style-hover="background:#e1493b;color:#fff">{{ icons.close }}</button>
+    </div>
+  </div>
+
+  <!-- ===== BODY ===== -->
+  <div style="flex:1;display:flex;min-height:0;">
+
+    <!-- RAIL -->
+    <div style="{{ railStyle }}">
+      <div style="flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 8px 4px;">
+        <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+          <div style="margin-bottom:8px;">
+            <sc-if value="{{ railExpanded }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--mute,#857b6c);padding:8px 8px 6px;">{{ g.name }}</div>
+            </sc-if>
+            <sc-if value="{{ collapsed }}" hint-placeholder-val="{{ true }}">
+              <div style="height:1px;background:var(--border,rgba(255,255,255,.08));margin:0 12px 6px;"></div>
+            </sc-if>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
+                <button onClick="{{ it.onSelect }}" title="{{ it.label }}" style="{{ it.wrapStyle }}" style-hover="{{ it.hoverStyle }}">
+                  <div style="position:relative;flex:0 0 auto;">
+                    <div style="{{ it.tileStyle }}">{{ it.mark }}</div>
+                    <sc-if value="{{ it.showBadge }}" hint-placeholder-val="{{ false }}"><span style="{{ badgeStyle }}">{{ it.badge }}</span></sc-if>
+                    <sc-if value="{{ it.showDot }}" hint-placeholder-val="{{ false }}"><span style="{{ dotStyle }}"></span></sc-if>
+                    <sc-if value="{{ it.showMute }}" hint-placeholder-val="{{ false }}"><span style="{{ muteDotStyle }}">{{ icons.muteMini }}</span></sc-if>
+                  </div>
+                  <sc-if value="{{ railExpanded }}" hint-placeholder-val="{{ false }}"><span style="{{ it.labelStyle }}">{{ it.label }}</span></sc-if>
+                  <sc-if value="{{ it.showRowBadge }}" hint-placeholder-val="{{ false }}"><span style="{{ rowBadgeStyle }}">{{ it.badge }}</span></sc-if>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="flex:0 0 auto;padding:8px;border-top:1px solid var(--border,rgba(255,255,255,.08));display:flex;flex-direction:column;gap:3px;">
+        <button onClick="{{ openServices }}" title="Añadir servicio" style="{{ addBtnStyle }}" style-hover="border-color:var(--accent);color:var(--accent)">
+          <span style="display:flex;">{{ icons.plus }}</span>
+          <sc-if value="{{ railExpanded }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:500;">Añadir servicio</span></sc-if>
+        </button>
+        <button onClick="{{ openSettings }}" title="Ajustes" style="{{ footBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">
+          <span style="display:flex;color:var(--dim,#bcb2a3);">{{ icons.gear }}</span>
+          <sc-if value="{{ railExpanded }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:500;color:var(--dim,#bcb2a3);">Ajustes</span></sc-if>
+        </button>
+        <button title="Cuenta" style="{{ footBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">
+          <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#f2792b,#c23d6a);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto;">JD</div>
+          <sc-if value="{{ railExpanded }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:500;color:var(--dim,#bcb2a3);">Juan D.</span></sc-if>
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div style="flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg,#1a1612);">
+      <!-- service chrome -->
+      <div style="height:44px;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:0 10px;border-bottom:1px solid var(--border,rgba(255,255,255,.08));">
+        <div style="{{ svc.tileStyle }}">{{ svc.mark }}</div>
+        <div style="min-width:0;">
+          <div style="font-size:13px;font-weight:600;line-height:1.15;">{{ svc.label }}</div>
+          <div style="font-size:11px;color:var(--mute,#857b6c);font-family:'IBM Plex Mono',monospace;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ svc.sub }}</div>
+        </div>
+        <div style="flex:1;"></div>
+        <button title="Atrás" style="{{ chromeBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ icons.back }}</button>
+        <button title="Adelante" style="{{ chromeBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ icons.fwd }}</button>
+        <button title="Recargar" style="{{ chromeBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ icons.reload }}</button>
+        <div style="width:1px;height:18px;background:var(--border,rgba(255,255,255,.08));margin:0 3px;"></div>
+        <button onClick="{{ toggleActiveMute }}" title="Silenciar servicio" style="{{ muteBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ muteIcon }}</button>
+        <button onClick="{{ pop }}" title="Abrir en ventana" style="{{ chromeBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ icons.popout }}</button>
+        <button title="Más" style="{{ chromeBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ icons.more }}</button>
+      </div>
+
+      <!-- webview content (generic mock of the embedded service) -->
+      <div style="flex:1;min-height:0;display:flex;flex-direction:column;background:var(--surface2,#2a241c);position:relative;">
+        <div style="height:26px;flex:0 0 auto;display:flex;align-items:center;padding:0 14px;font-size:11px;color:var(--mute,#857b6c);border-bottom:1px solid var(--border,rgba(255,255,255,.06));font-family:'IBM Plex Mono',monospace;">
+          <span style="width:7px;height:7px;border-radius:50%;background:#3fbf6f;margin-right:8px;"></span>webview · {{ svc.sub }}
+        </div>
+        <div style="flex:1;min-height:0;display:flex;flex-direction:column;">
+          <div style="flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:14px 18px 10px;border-bottom:1px solid var(--border,rgba(255,255,255,.06));">
+            <span style="display:flex;color:var(--dim,#bcb2a3);">{{ icons.hash }}</span>
+            <span style="font-weight:700;font-size:15px;">general</span>
+            <span style="font-size:12px;color:var(--mute,#857b6c);">· 42 miembros</span>
+          </div>
+          <div style="flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;gap:10px;">
+              <div style="width:34px;height:34px;border-radius:8px;background:#2f9e6f;color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;">LM</div>
+              <div><div style="display:flex;align-items:baseline;gap:7px;"><span style="font-weight:600;font-size:13px;">Laura M.</span><span style="font-size:11px;color:var(--mute,#857b6c);">10:32</span></div><div style="font-size:13.5px;color:var(--text,#f5f0e8);line-height:1.5;">Buenos días equipo ☀️ ¿alguien puede revisar el deploy de anoche antes del standup?</div></div>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <div style="width:34px;height:34px;border-radius:8px;background:#4b6bd6;color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;">DR</div>
+              <div><div style="display:flex;align-items:baseline;gap:7px;"><span style="font-weight:600;font-size:13px;">Diego R.</span><span style="font-size:11px;color:var(--mute,#857b6c);">10:34</span></div><div style="font-size:13.5px;color:var(--text,#f5f0e8);line-height:1.5;">Ya lo estoy viendo. El build <b>#482</b> quedó verde ✅ subo notas en un momento.</div></div>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <div style="width:34px;height:34px;border-radius:8px;background:#c23d6a;color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;">AR</div>
+              <div><div style="display:flex;align-items:baseline;gap:7px;"><span style="font-weight:600;font-size:13px;">Ana Ruiz</span><span style="font-size:11px;color:var(--mute,#857b6c);">10:41</span></div><div style="font-size:13.5px;color:var(--text,#f5f0e8);line-height:1.5;">Perfecto. Recuerden que hoy migramos el runner a <b>arm64</b> 🐧</div></div>
+            </div>
+          </div>
+          <div style="flex:0 0 auto;padding:10px 18px 16px;">
+            <div style="display:flex;align-items:center;gap:10px;border:1px solid var(--border2,rgba(255,255,255,.12));border-radius:12px;background:var(--surface,#211c16);padding:10px 14px;">
+              <span style="flex:1;font-size:13.5px;color:var(--mute,#857b6c);">Enviar un mensaje a #general</span>
+              <button style="width:32px;height:32px;border-radius:9px;border:none;background:var(--accent);color:var(--accentFg);display:flex;align-items:center;justify-content:center;cursor:pointer;">{{ icons.send }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== NOTIFICATIONS SLIDE-OVER ===== -->
+  <sc-if value="{{ showNotifs }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;top:46px;right:0;bottom:0;width:392px;max-width:86%;z-index:30;background:var(--surface,#211c16);border-left:1px solid var(--border,rgba(255,255,255,.08));box-shadow:-24px 0 50px -24px rgba(0,0,0,.6);display:flex;flex-direction:column;animation:pc-slide .18s ease;">
+      <div style="flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:14px 16px;border-bottom:1px solid var(--border,rgba(255,255,255,.08));">
+        <span style="font-weight:700;font-size:15px;">Notificaciones</span>
+        <span style="{{ countPillStyle }}">{{ countStr }}</span>
+        <div style="flex:1;"></div>
+        <button title="Marcar todo leído" style="{{ chromeBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ icons.check }}</button>
+        <button onClick="{{ closePanel }}" style="{{ chromeBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ icons.close }}</button>
+      </div>
+      <sc-if value="{{ dnd }}" hint-placeholder-val="{{ false }}">
+        <div style="margin:12px 14px 0;padding:11px 13px;border-radius:11px;background:var(--accentSoft);border:1px solid var(--accent);display:flex;align-items:center;gap:10px;">
+          <span style="display:flex;color:var(--accent);">{{ icons.moon }}</span>
+          <div style="flex:1;font-size:12.5px;color:var(--text,#f5f0e8);">No molestar activo — las alertas están en pausa.</div>
+          <button onClick="{{ toggleDnd }}" style="font-size:12px;font-weight:600;color:var(--accent);background:transparent;border:none;cursor:pointer;">Desactivar</button>
+        </div>
+      </sc-if>
+      <div style="flex:1;overflow-y:auto;padding:8px;">
+        <div style="font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--mute,#857b6c);padding:8px 8px 6px;">Nuevas</div>
+        <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="5">
+          <button onClick="{{ n.onSelect }}" style="width:100%;display:flex;gap:11px;padding:11px 10px;border-radius:11px;border:none;background:transparent;cursor:pointer;text-align:left;color:var(--text,#f5f0e8);" style-hover="background:var(--hover,rgba(255,255,255,.06))">
+            <div style="{{ n.tileStyle }}">{{ n.mark }}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:baseline;gap:6px;"><span style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ n.title }}</span><span style="flex:1;"></span><span style="font-size:11px;color:var(--mute,#857b6c);flex:0 0 auto;">{{ n.time }}</span></div>
+              <div style="font-size:12.5px;color:var(--dim,#bcb2a3);line-height:1.4;margin-top:2px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">{{ n.preview }}</div>
+            </div>
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--accent);flex:0 0 auto;margin-top:5px;"></span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===== SERVICE MANAGER MODAL ===== -->
+  <sc-if value="{{ showServices }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePanel }}" style="position:absolute;inset:0;z-index:50;background:rgba(6,4,2,.5);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px;animation:pc-fade .15s ease;">
+      <div onClick="{{ stop }}" style="width:760px;max-width:100%;max-height:100%;background:var(--surface,#211c16);border:1px solid var(--border2,rgba(255,255,255,.12));border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px -20px rgba(0,0,0,.7);animation:pc-pop .16s ease;">
+        <div style="flex:0 0 auto;display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border,rgba(255,255,255,.08));">
+          <div><div style="font-weight:700;font-size:16px;">Añadir servicio</div><div style="font-size:12.5px;color:var(--mute,#857b6c);margin-top:1px;">Cualquier app web o chat de IA se ejecuta en su propio contenedor aislado.</div></div>
+          <div style="flex:1;"></div>
+          <button onClick="{{ closePanel }}" style="{{ chromeBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ icons.close }}</button>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:18px 20px;">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--mute,#857b6c);margin-bottom:10px;">Chats de IA</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:22px;">
+            <sc-for list="{{ aiPresets }}" as="p" hint-placeholder-count="4">
+              <button onClick="{{ p.onSelect }}" style="{{ p.cardStyle }}" style-hover="border-color:var(--border2,rgba(255,255,255,.2))">
+                <div style="{{ p.tileStyle }}">{{ p.mark }}</div>
+                <span style="font-size:12.5px;font-weight:600;">{{ p.label }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--mute,#857b6c);margin-bottom:10px;">Mensajería y trabajo</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;">
+            <sc-for list="{{ appPresets }}" as="p" hint-placeholder-count="6">
+              <button onClick="{{ p.onSelect }}" style="{{ p.cardStyle }}" style-hover="border-color:var(--border2,rgba(255,255,255,.2))">
+                <div style="{{ p.tileStyle }}">{{ p.mark }}</div>
+                <span style="font-size:12.5px;font-weight:600;">{{ p.label }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="margin-top:22px;padding-top:18px;border-top:1px solid var(--border,rgba(255,255,255,.08));">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--mute,#857b6c);margin-bottom:10px;">O añade una URL personalizada</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <div style="flex:1;min-width:220px;display:flex;align-items:center;gap:9px;height:40px;padding:0 13px;border-radius:10px;border:1px solid var(--border2,rgba(255,255,255,.12));background:var(--surface2,#2a241c);color:var(--mute,#857b6c);font-family:'IBM Plex Mono',monospace;font-size:13px;">https://</div>
+              <button style="height:40px;padding:0 20px;border-radius:10px;border:none;background:var(--accent);color:var(--accentFg);font-weight:700;font-size:13.5px;cursor:pointer;">Añadir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===== SETTINGS MODAL ===== -->
+  <sc-if value="{{ showSettings }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePanel }}" style="position:absolute;inset:0;z-index:50;background:rgba(6,4,2,.5);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px;animation:pc-fade .15s ease;">
+      <div onClick="{{ stop }}" style="width:820px;max-width:100%;height:560px;max-height:100%;background:var(--surface,#211c16);border:1px solid var(--border2,rgba(255,255,255,.12));border-radius:16px;overflow:hidden;display:flex;box-shadow:0 30px 80px -20px rgba(0,0,0,.7);animation:pc-pop .16s ease;">
+        <div style="width:210px;flex:0 0 auto;background:var(--header,#14100c);border-right:1px solid var(--border,rgba(255,255,255,.08));padding:16px 12px;display:flex;flex-direction:column;gap:2px;">
+          <div style="font-weight:700;font-size:15px;padding:6px 10px 12px;">Ajustes</div>
+          <div style="{{ navActiveStyle }}">Apariencia</div>
+          <div style="{{ navStyle }}">Notificaciones</div>
+          <div style="{{ navStyle }}">Escritorios</div>
+          <div style="{{ navStyle }}">Servicios</div>
+          <div style="{{ navStyle }}">Atajos</div>
+          <div style="{{ navStyle }}">Sistema</div>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:22px 24px;">
+          <div style="display:flex;align-items:center;margin-bottom:20px;"><div style="font-weight:700;font-size:17px;">Apariencia</div><div style="flex:1;"></div><button onClick="{{ closePanel }}" style="{{ chromeBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ icons.close }}</button></div>
+
+          <div style="margin-bottom:22px;">
+            <div style="font-size:13px;font-weight:600;margin-bottom:9px;">Tema</div>
+            <div style="display:flex;gap:6px;padding:4px;background:var(--surface2,#2a241c);border-radius:11px;width:fit-content;">
+              <sc-for list="{{ themeOptions }}" as="o" hint-placeholder-count="3">
+                <button onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="margin-bottom:22px;">
+            <div style="font-size:13px;font-weight:600;margin-bottom:9px;">Color de acento</div>
+            <div style="display:flex;gap:12px;">
+              <sc-for list="{{ accentSwatches }}" as="a" hint-placeholder-count="4">
+                <button onClick="{{ a.onClick }}" title="{{ a.name }}" style="{{ a.style }}"><sc-if value="{{ a.selected }}" hint-placeholder-val="{{ false }}"><span style="color:#fff;display:flex;">{{ icons.check }}</span></sc-if></button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="margin-bottom:26px;">
+            <div style="font-size:13px;font-weight:600;margin-bottom:9px;">Densidad</div>
+            <div style="display:flex;gap:6px;padding:4px;background:var(--surface2,#2a241c);border-radius:11px;width:fit-content;">
+              <sc-for list="{{ densityOptions }}" as="o" hint-placeholder-count="3">
+                <button onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="font-weight:700;font-size:17px;margin:6px 0 16px;padding-top:18px;border-top:1px solid var(--border,rgba(255,255,255,.08));">Notificaciones</div>
+          <div style="display:flex;flex-direction:column;gap:2px;">
+            <div style="{{ rowStyle }}"><div><div style="font-size:13.5px;font-weight:500;">No molestar</div><div style="font-size:12px;color:var(--mute,#857b6c);">Silencia alertas de todos los servicios</div></div><button onClick="{{ tgDnd.onClick }}" style="{{ tgDnd.trackStyle }}"><span style="{{ tgDnd.knobStyle }}"></span></button></div>
+            <div style="{{ rowStyle }}"><div><div style="font-size:13.5px;font-weight:500;">Contador numérico en el icono</div><div style="font-size:12px;color:var(--mute,#857b6c);">Muestra el número de no leídos por servicio</div></div><button onClick="{{ tgBadge.onClick }}" style="{{ tgBadge.trackStyle }}"><span style="{{ tgBadge.knobStyle }}"></span></button></div>
+            <div style="{{ rowStyle }}"><div><div style="font-size:13.5px;font-weight:500;">Vista previa del mensaje</div><div style="font-size:12px;color:var(--mute,#857b6c);">Incluye texto del mensaje en la notificación</div></div><button onClick="{{ tgPreview.onClick }}" style="{{ tgPreview.trackStyle }}"><span style="{{ tgPreview.knobStyle }}"></span></button></div>
+            <div style="{{ rowStyleLast }}"><div><div style="font-size:13.5px;font-weight:500;">Sonido de alerta</div><div style="font-size:12px;color:var(--mute,#857b6c);">Reproduce un sonido con cada notificación</div></div><button onClick="{{ tgSound.onClick }}" style="{{ tgSound.trackStyle }}"><span style="{{ tgSound.knobStyle }}"></span></button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===== POP-OUT FLOATING WINDOW ===== -->
+  <sc-if value="{{ popped }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;z-index:45;background:rgba(6,4,2,.55);backdrop-filter:blur(1.5px);animation:pc-fade .15s ease;">
+      <div style="position:absolute;right:34px;bottom:34px;width:520px;max-width:88%;height:360px;max-height:80%;background:var(--bg,#1a1612);border:1px solid var(--border2,rgba(255,255,255,.14));border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 70px -15px rgba(0,0,0,.7);animation:pc-pop .18s ease;">
+        <div style="height:38px;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:0 8px 0 12px;background:var(--header,#14100c);border-bottom:1px solid var(--border,rgba(255,255,255,.08));">
+          <div style="{{ svc.tileStyleSm }}">{{ svc.mark }}</div>
+          <span style="font-weight:600;font-size:13px;">{{ svc.label }}</span>
+          <span style="font-size:11px;color:var(--mute,#857b6c);font-family:'IBM Plex Mono',monospace;">· Escritorio 2 “Cliente”</span>
+          <div style="flex:1;"></div>
+          <button onClick="{{ unpop }}" title="Volver a la app" style="{{ winBtnStyle }}" style-hover="background:var(--hover,rgba(255,255,255,.06))">{{ icons.dock }}</button>
+          <button onClick="{{ unpop }}" title="Cerrar" style="{{ winBtnStyle }}" style-hover="background:#e1493b;color:#fff">{{ icons.close }}</button>
+        </div>
+        <div style="flex:1;background:var(--surface2,#2a241c);display:flex;align-items:center;justify-content:center;padding:20px;">
+          <div style="text-align:center;max-width:340px;">
+            <div style="width:52px;height:52px;border-radius:13px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;background:var(--accent);">{{ svc.mark }}</div>
+            <div style="font-weight:700;font-size:15px;margin-bottom:6px;">{{ svc.label }} en su propia ventana</div>
+            <div style="font-size:12.5px;color:var(--dim,#bcb2a3);line-height:1.5;">Flotante e independiente — colócala en el escritorio de cada empresa. Cada escritorio recuerda qué servicios abre.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1360,&quot;height&quot;:880},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;,&quot;auto&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Apariencia&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#F5822E&quot;,&quot;options&quot;:[&quot;#F5822E&quot;,&quot;#2E8BF0&quot;,&quot;#22C7B8&quot;,&quot;#8B5CF6&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Apariencia&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;compact&quot;,&quot;balanced&quot;,&quot;spacious&quot;],&quot;default&quot;:&quot;balanced&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Apariencia&quot;},&quot;railExpanded&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sidebar&quot;}}">
+class Component extends DCLogic {
+  state = { theme:null, accent:null, density:null, railExpanded:null, activeId:'dydd', panel:null, dnd:false, popped:false, muted:{ gmail:true }, nbadge:true, npreview:true, nsound:false, selPreset:null };
+
+  val(k, def){ return this.state[k] != null ? this.state[k] : (this.props[k] != null ? this.props[k] : def); }
+
+  toggleRail = () => this.setState(s => ({ railExpanded: !(s.railExpanded != null ? s.railExpanded : (this.props.railExpanded||false)) }));
+  select = (id) => this.setState({ activeId:id, panel:null, popped:false });
+  openPanel = (p) => this.setState(s => ({ panel: s.panel===p ? null : p }));
+  openNotifs = () => this.openPanel('notifs');
+  openServices = () => this.openPanel('services');
+  openSettings = () => this.openPanel('settings');
+  closePanel = () => this.setState({ panel:null });
+  stop = (e) => { e.stopPropagation(); };
+  toggleDnd = () => this.setState(s => ({ dnd: !s.dnd }));
+  pop = () => this.setState({ popped:true });
+  unpop = () => this.setState({ popped:false });
+  setTheme = (t) => this.setState({ theme:t });
+  setAccent = (a) => this.setState({ accent:a });
+  setDensity = (d) => this.setState({ density:d });
+  toggleFlag = (k) => this.setState(s => ({ [k]: !s[k] }));
+  toggleActiveMute = () => this.setState(s => { const m = Object.assign({}, s.muted); m[s.activeId] = !m[s.activeId]; return { muted:m }; });
+
+  icon(name, s){
+    s = s || 18;
+    const mk = (kids, extra) => React.createElement('svg', Object.assign({ width:s, height:s, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.7, strokeLinecap:'round', strokeLinejoin:'round', style:{ display:'block', flex:'0 0 auto' } }, extra||{}), kids);
+    const P = (d,i) => React.createElement('path', { d, key:i||d });
+    const C = (cx,cy,r,i,f) => React.createElement('circle', { cx, cy, r, key:i||('c'+cx+cy), fill:f||'none' });
+    const R = (x,y,w,h,rx,i) => React.createElement('rect', { x, y, width:w, height:h, rx:rx||0, key:i||'r' });
+    switch(name){
+      case 'menu': return mk([P('M3.5 6h17'),P('M3.5 12h17'),P('M3.5 18h17')]);
+      case 'search': return mk([C(11,11,7,'c'),P('M20.5 20.5l-4.2-4.2')]);
+      case 'bell': return mk([P('M18 8.5a6 6 0 10-12 0c0 6.5-2.5 8.5-2.5 8.5h17s-2.5-2-2.5-8.5'),P('M13.7 21a2 2 0 01-3.4 0')]);
+      case 'moon': return mk([P('M21 12.6A8.5 8.5 0 1111.4 3 6.6 6.6 0 0021 12.6z')]);
+      case 'gear': return mk([C(12,12,3,'c'),P('M19.4 15a1.6 1.6 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.6 1.6 0 00-2.7 1.1V22a2 2 0 01-4 0v-.1a1.6 1.6 0 00-2.7-1.1l-.1.1a2 2 0 11-2.8-2.8l.1-.1A1.6 1.6 0 004.6 15H4.4a2 2 0 010-4h.2a1.6 1.6 0 001.1-2.7l-.1-.1a2 2 0 112.8-2.8l.1.1A1.6 1.6 0 0011 4.6V4.4a2 2 0 014 0v.2a1.6 1.6 0 002.7 1.1l.1-.1a2 2 0 112.8 2.8l-.1.1a1.6 1.6 0 001.1 2.7h.2a2 2 0 010 4h-.2z')]);
+      case 'plus': return mk([P('M12 5v14'),P('M5 12h14')]);
+      case 'close': return mk([P('M6 6l12 12'),P('M18 6L6 18')], s>15?{}:{ strokeWidth:1.6 });
+      case 'min': return mk([P('M6 12h12')]);
+      case 'max': return mk([R(6,6,12,12,2)]);
+      case 'reload': return mk([P('M21 3v6h-6'),P('M20.5 13a8.5 8.5 0 11-2.3-7.7L21 9')]);
+      case 'back': return mk([P('M15 5l-7 7 7 7')]);
+      case 'fwd': return mk([P('M9 5l7 7-7 7')]);
+      case 'popout': return mk([P('M15 4h5v5'),P('M20 4l-8 8'),P('M18 13.5V18a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h4.5')]);
+      case 'dock': return mk([R(4,4,16,16,2),P('M4 15h16')]);
+      case 'more': return mk([C(12,5,1.4,'a','currentColor'),C(12,12,1.4,'b','currentColor'),C(12,19,1.4,'d','currentColor')], { stroke:'none' });
+      case 'mute': return mk([P('M18 8.5a6 6 0 00-9.4-4.9'),P('M6 9.5c0 6-2.5 7.5-2.5 7.5H16'),P('M13.7 21a2 2 0 01-3.4 0'),P('M3 3l18 18')]);
+      case 'muteMini': return mk([P('M18 8.5a6 6 0 00-9.4-4.9'),P('M6 9.5c0 6-2.5 7.5-2.5 7.5H16'),P('M3 3l18 18')], { strokeWidth:2.2 });
+      case 'check': return mk([P('M20 6.5L9.5 17 4.5 12')]);
+      case 'hash': return mk([P('M4.5 9h15'),P('M4.5 15h15'),P('M10.5 3.5L8.5 20.5'),P('M15.5 3.5l-2 17')]);
+      case 'send': return mk([P('M21 3L3 10.5l7 2.5 2.5 7L21 3z')]);
+      default: return mk([C(12,12,8,'c')]);
+    }
+  }
+
+  logo(size, opt){
+    opt = opt || {};
+    const e = React.createElement;
+    const uid = 'pcm' + (this._n = (this._n||0) + 1);
+    const acc = opt.accent || '#F5822E';
+    const blue = '#2E8BF0';
+    const mono = !!opt.mono;
+    const mc = opt.monoColor || '#E9EDF6';
+    const ringStroke = mono ? mc : ('url(#'+uid+'r)');
+    const planetFill = mono ? 'none' : ('url(#'+uid+'p)');
+    const starCol = mono ? mc : '#DCE3F2';
+    const defs = mono ? null : e('defs', { key:'d' }, [
+      e('radialGradient', { id:uid+'p', key:'p', cx:'36%', cy:'30%', r:'78%' }, [
+        e('stop', { offset:'0%', stopColor:'#2E3C68', key:0 }),
+        e('stop', { offset:'55%', stopColor:'#141E38', key:1 }),
+        e('stop', { offset:'100%', stopColor:'#090F20', key:2 }),
+      ]),
+      e('linearGradient', { id:uid+'r', key:'r', x1:'0', y1:'0', x2:'1', y2:'1' }, [
+        e('stop', { offset:'0%', stopColor:blue, key:0 }),
+        e('stop', { offset:'100%', stopColor:acc, key:1 }),
+      ]),
+    ]);
+    const kids = [];
+    if (opt.tile) kids.push(e('rect', { key:'t', x:1, y:1, width:118, height:118, rx:28, fill: opt.tileFill || '#0E1526', stroke:'rgba(255,255,255,.10)', strokeWidth:1 }));
+    if (!mono) kids.push(e('circle', { key:'gl', cx:60, cy:60, r:31, fill:acc, opacity:0.10 }));
+    kids.push(e('g', { key:'ring', transform:'rotate(-22 60 60)' }, [
+      e('ellipse', { key:'e', cx:60, cy:60, rx:50, ry:18, fill:'none', stroke:ringStroke, strokeWidth:3.2, opacity: mono?0.85:1, strokeLinecap:'round' }),
+      !mono && e('circle', { key:'bg', cx:110, cy:60, r:9, fill:acc, opacity:0.32 }),
+      e('circle', { key:'bd', cx:110, cy:60, r:5.4, fill: mono?mc:acc }),
+    ].filter(Boolean)));
+    kids.push(e('circle', { key:'pl', cx:60, cy:60, r:22, fill:planetFill, stroke: mono?mc:'rgba(255,255,255,.14)', strokeWidth: mono?2:1 }));
+    const line = (x1,y1,x2,y2,k) => e('line', { key:k, x1, y1, x2, y2, stroke:starCol, strokeWidth:1.2, opacity:0.5, strokeLinecap:'round' });
+    kids.push(line(51,54,60,48,'l1'));
+    kids.push(line(60,48,69,55,'l2'));
+    kids.push(line(60,48,63,66,'l3'));
+    [[51,54,2.0],[69,55,2.2],[63,66,1.8]].forEach((s,i) => kids.push(e('circle', { key:'st'+i, cx:s[0], cy:s[1], r:s[2], fill:starCol })));
+    if (!mono) kids.push(e('circle', { key:'sgb', cx:60, cy:48, r:7, fill:acc, opacity:0.30 }));
+    kids.push(e('line', { key:'spv', x1:60, y1:40.5, x2:60, y2:55.5, stroke: mono?mc:acc, strokeWidth:1.4, strokeLinecap:'round' }));
+    kids.push(e('line', { key:'sph', x1:52.5, y1:48, x2:67.5, y2:48, stroke: mono?mc:acc, strokeWidth:1.4, strokeLinecap:'round' }));
+    kids.push(e('circle', { key:'sgc', cx:60, cy:48, r:2.6, fill: mono?mc:acc }));
+    return e('svg', { width:size, height:size, viewBox:'0 0 120 120', fill:'none', style:{ display:'block', overflow:'visible', flex:'0 0 auto' } }, [defs].concat(kids).filter(Boolean));
+  }
+
+  hexToRgba(hex, a){ const h = hex.replace('#',''); const n = parseInt(h.length===3 ? h.split('').map(c=>c+c).join('') : h, 16); return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')'; }
+  brightness(hex){ const h = hex.replace('#',''); const n = parseInt(h.length===3 ? h.split('').map(c=>c+c).join('') : h, 16); return ((n>>16&255)*299 + (n>>8&255)*587 + (n&255)*114)/1000; }
+
+  renderVals(){
+    const theme = this.val('theme','dark');
+    const dark = theme !== 'light';
+    const density = this.val('density','balanced');
+    const railExpanded = !!this.val('railExpanded', false);
+    const accent = this.val('accent', '#F5822E');
+    const accentSoft = this.hexToRgba(accent, dark ? 0.18 : 0.14);
+    const accentFg = this.brightness(accent) > 150 ? '#1b1206' : '#ffffff';
+    const dnd = this.state.dnd, active = this.state.activeId, muted = this.state.muted, panel = this.state.panel;
+
+    const T = dark ? {
+      bg:'#0B1220', surface:'#0E1526', surface2:'#16203A', header:'#080B14',
+      border:'rgba(255,255,255,.08)', border2:'rgba(255,255,255,.15)',
+      text:'#E9EDF6', dim:'#9AA3B8', mute:'#5A6480', hover:'rgba(255,255,255,.06)'
+    } : {
+      bg:'#F4F6FB', surface:'#FFFFFF', surface2:'#EDF1F9', header:'#E7ECF5',
+      border:'rgba(12,22,44,.10)', border2:'rgba(12,22,44,.16)',
+      text:'#0E1526', dim:'#4A5570', mute:'#8A93AB', hover:'rgba(12,22,44,.05)'
+    };
+    const themeVars = { display:'contents', '--bg':T.bg, '--surface':T.surface, '--surface2':T.surface2, '--header':T.header, '--border':T.border, '--border2':T.border2, '--text':T.text, '--dim':T.dim, '--mute':T.mute, '--hover':T.hover, '--accent':accent, '--accentSoft':accentSoft, '--accentFg':accentFg };
+
+    const tile = density==='compact' ? 34 : density==='spacious' ? 44 : 39;
+    const railW = railExpanded ? 244 : (tile + 28);
+
+    const data = [
+      { name:'Trabajo', items:[
+        { id:'dydd', label:'DYDD', sub:'dydd.slack.com', bg:'#4A154B', mark:'D', badge:12, dot:false },
+        { id:'geoprzem', label:'Geoprzem', sub:'teams.microsoft.com', bg:'#4b53bc', mark:'G', badge:0, dot:true },
+        { id:'sq', label:'SQ', sub:'sq.slack.com', bg:'#611f69', mark:'S', badge:3, dot:false },
+        { id:'affinity', label:'Affinity', sub:'teams.microsoft.com', bg:'#5059c9', mark:'A', badge:0, dot:false },
+      ]},
+      { name:'Personal', items:[
+        { id:'wa', label:'WhatsApp', sub:'web.whatsapp.com', bg:'#1fa855', mark:'W', badge:5, dot:false },
+        { id:'tg', label:'Telegram', sub:'web.telegram.org', bg:'#229ed9', mark:'T', badge:0, dot:true },
+        { id:'gmail', label:'Gmail', sub:'mail.google.com', bg:'#ea4335', mark:'@', badge:24, dot:false },
+      ]},
+      { name:'IA', items:[
+        { id:'claude', label:'Claude', sub:'claude.ai', bg:'#c96442', mark:'Cl', badge:0, dot:false },
+        { id:'gpt', label:'ChatGPT', sub:'chatgpt.com', bg:'#0f7a63', mark:'GP', badge:0, dot:false },
+        { id:'gemini', label:'Gemini', sub:'gemini.google.com', bg:'#1a73e8', mark:'Gm', badge:0, dot:false },
+        { id:'grok', label:'Grok', sub:'grok.com', bg:'#20242b', mark:'Gk', badge:0, dot:false },
+      ]},
+    ];
+
+    const flat = {};
+    data.forEach(g => g.items.forEach(it => { flat[it.id] = it; }));
+    const nbadge = this.state.nbadge;
+
+    const tileStyleFor = (it, sz) => ({ width:sz, height:sz, borderRadius:Math.round(sz*0.29), background:it.bg, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700, fontSize:it.mark.length>1 ? Math.round(sz*0.34) : Math.round(sz*0.44), fontFamily:"'Space Grotesk',sans-serif", flex:'0 0 auto', letterSpacing:'-.02em' });
+
+    const groups = data.map(g => ({ name:g.name, items: g.items.map(it => {
+      const isActive = it.id === active;
+      const isMuted = !!muted[it.id];
+      const showBadge = !dnd && nbadge && it.badge>0 && !isMuted && !railExpanded;
+      const showRowBadge = !dnd && nbadge && it.badge>0 && !isMuted && railExpanded;
+      const showDot = !dnd && !isMuted && it.badge===0 && it.dot;
+      const ts = tileStyleFor(it, tile);
+      if (isActive) ts.boxShadow = '0 0 0 2px '+accent+', 0 2px 8px '+this.hexToRgba(it.bg,0.5);
+      const wrap = { position:'relative', display:'flex', alignItems:'center', gap:12, width:'100%', padding: railExpanded ? '5px 10px' : '5px', justifyContent: railExpanded ? 'flex-start' : 'center', border:'none', borderRadius:12, cursor:'pointer', color:'var(--text,#f5f0e8)', transition:'background .12s' };
+      if (isActive) wrap.background = accentSoft;
+      return { id:it.id, label:it.label, mark:it.mark, badge:it.badge, isActive, showBadge, showRowBadge, showDot, showMute: isMuted,
+        onSelect: () => this.select(it.id), tileStyle:ts, wrapStyle:wrap,
+        hoverStyle: isActive ? '' : 'background:var(--hover,rgba(255,255,255,.06))',
+        labelStyle:{ fontSize:13.5, fontWeight: isActive?600:500, color: isActive?'var(--text,#f5f0e8)':'var(--dim,#bcb2a3)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', flex:1, textAlign:'left' } };
+    }) }));
+
+    let count = 0; data.forEach(g => g.items.forEach(it => { if(!muted[it.id]) count += it.badge; }));
+    const countStr = count>99 ? '99+' : (''+count);
+
+    const sv = flat[active];
+    const svc = { label:sv.label, mark:sv.mark, sub:sv.sub, tileStyle:tileStyleFor(sv,30), tileStyleSm:tileStyleFor(sv,26) };
+    const svcMuted = !!muted[active];
+
+    const badgeBase = { position:'absolute', top:-4, right:-4, minWidth:17, height:17, padding:'0 4px', borderRadius:9, background:accent, color:accentFg, fontSize:10.5, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center', border:'2px solid var(--surface,#0E1526)', fontFamily:"'Space Grotesk',sans-serif" };
+    const dotStyle = { position:'absolute', top:-1, right:-1, width:11, height:11, borderRadius:'50%', background:accent, border:'2px solid var(--surface,#211c16)' };
+    const muteDotStyle = { position:'absolute', bottom:-3, right:-3, width:15, height:15, borderRadius:'50%', background:'var(--surface2,#2a241c)', border:'1.5px solid var(--surface,#211c16)', color:'var(--mute,#857b6c)', display:'flex', alignItems:'center', justifyContent:'center' };
+    const rowBadgeStyle = { minWidth:19, height:18, padding:'0 5px', borderRadius:9, background:accent, color:accentFg, fontSize:11, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center', flex:'0 0 auto' };
+
+    const railStyle = { width:railW, flex:'0 0 auto', display:'flex', flexDirection:'column', background:'var(--surface,#211c16)', borderRight:'1px solid var(--border,rgba(255,255,255,.08))', transition:'width .16s ease' };
+    const chromeBtnStyle = { width:30, height:30, display:'flex', alignItems:'center', justifyContent:'center', borderRadius:8, border:'none', background:'transparent', color:'var(--dim,#bcb2a3)', cursor:'pointer', flex:'0 0 auto' };
+    const winBtnStyle = { width:30, height:30, display:'flex', alignItems:'center', justifyContent:'center', borderRadius:7, border:'none', background:'transparent', color:'var(--dim,#bcb2a3)', cursor:'pointer', flex:'0 0 auto' };
+    const muteBtnStyle = Object.assign({}, chromeBtnStyle, svcMuted ? { color:accent, background:accentSoft } : {});
+    const dndBtnStyle = Object.assign({ transition:'all .12s' }, winBtnStyle, dnd ? { color:accentFg, background:accent } : {});
+
+    const addBtnStyle = { display:'flex', alignItems:'center', gap:11, width:'100%', padding: railExpanded ? '9px 11px' : '9px', justifyContent: railExpanded?'flex-start':'center', border:'1.5px dashed var(--border2,rgba(255,255,255,.16))', borderRadius:12, background:'transparent', color:'var(--dim,#bcb2a3)', cursor:'pointer', transition:'all .12s' };
+    const footBtnStyle = { display:'flex', alignItems:'center', gap:11, width:'100%', padding: railExpanded ? '7px 11px' : '7px', justifyContent: railExpanded?'flex-start':'center', border:'none', borderRadius:12, background:'transparent', cursor:'pointer' };
+
+    // notifications
+    const rawN = [
+      { id:'n1', svcId:'dydd', title:'Ana Ruiz · #general', preview:'Recuerden que hoy migramos el runner a arm64 🐧', time:'ahora' },
+      { id:'n2', svcId:'wa', title:'Mamá', preview:'📷 Foto', time:'2 min' },
+      { id:'n3', svcId:'sq', title:'#deploys', preview:'Build #482 pasó correctamente ✅', time:'12 min' },
+      { id:'n4', svcId:'gmail', title:'AWS Billing', preview:'Tu recibo de junio ya está disponible para descargar', time:'1 h' },
+      { id:'n5', svcId:'geoprzem', title:'Calendario', preview:'“Sync Geoprzem” empieza en 15 minutos', time:'1 h' },
+    ];
+    const npreview = this.state.npreview;
+    const notifs = rawN.map(n => { const s = flat[n.svcId]; return { id:n.id, title:n.title, time:n.time, preview: npreview ? n.preview : 'Nuevo mensaje', mark:s.mark, tileStyle:tileStyleFor(s,36), onSelect:()=>this.select(n.svcId) }; });
+
+    // presets
+    const mkPreset = (label, bg, mark) => ({ label, mark, tileStyle:{ width:38, height:38, borderRadius:11, background:bg, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700, fontSize: mark.length>1?13:16, letterSpacing:'-.02em' }, onSelect:()=>{}, get cardStyle(){ return { display:'flex', flexDirection:'column', alignItems:'flex-start', gap:9, padding:'13px', borderRadius:13, border:'1px solid var(--border,rgba(255,255,255,.08))', background:'var(--surface2,#2a241c)', color:'var(--text,#f5f0e8)', cursor:'pointer', transition:'border-color .12s' }; } });
+    const aiPresets = [ mkPreset('Claude','#c96442','Cl'), mkPreset('ChatGPT','#0f7a63','GP'), mkPreset('Gemini','#1a73e8','Gm'), mkPreset('Grok','#20242b','Gk'), mkPreset('Perplexity','#1f7a82','Px'), mkPreset('Copilot','#5b48d6','Co') ];
+    const appPresets = [ mkPreset('Slack','#4A154B','Sl'), mkPreset('Teams','#4b53bc','Te'), mkPreset('Discord','#5865f2','Dc'), mkPreset('WhatsApp','#1fa855','Wa'), mkPreset('Telegram','#229ed9','Tg'), mkPreset('Gmail','#ea4335','@'), mkPreset('Outlook','#0f6cbd','Ou'), mkPreset('Notion','#4a4a48','No') ];
+
+    // settings controls
+    const segBtn = (selected) => ({ padding:'7px 15px', borderRadius:8, border:'none', fontSize:13, fontWeight:600, cursor:'pointer', background: selected?'var(--accent)':'transparent', color: selected?accentFg:'var(--dim,#bcb2a3)', transition:'all .12s' });
+    const themeOptions = [ ['light','Claro'], ['dark','Oscuro'], ['auto','Auto'] ].map(([id,label]) => ({ label, onClick:()=>this.setTheme(id), style: segBtn(theme===id || (id==='dark'&&theme==='auto')) }));
+    const densityOptions = [ ['compact','Compacta'], ['balanced','Equilibrada'], ['spacious','Cómoda'] ].map(([id,label]) => ({ label, onClick:()=>this.setDensity(id), style: segBtn(density===id) }));
+    const swatchColors = [ ['#f2792b','Naranja'], ['#3b82f6','Azul'], ['#8b5cf6','Violeta'], ['#22c55e','Verde'] ];
+    const accentSwatches = swatchColors.map(([c,name]) => ({ name, selected: accent===c, onClick:()=>this.setAccent(c), style:{ width:34, height:34, borderRadius:'50%', background:c, border: accent===c ? '2px solid var(--text,#f5f0e8)' : '2px solid transparent', boxShadow: accent===c ? '0 0 0 2px '+c : 'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0 } }));
+
+    const sw = (on) => ({ trackStyle:{ width:40, height:23, borderRadius:12, background: on?accent:'var(--border2,rgba(255,255,255,.14))', position:'relative', border:'none', cursor:'pointer', transition:'background .15s', flex:'0 0 auto', padding:0 }, knobStyle:{ position:'absolute', top:3, left: on?20:3, width:17, height:17, borderRadius:'50%', background:'#fff', transition:'left .15s', boxShadow:'0 1px 3px rgba(0,0,0,.4)' } });
+    const rowStyle = { display:'flex', alignItems:'center', gap:14, padding:'13px 0', borderBottom:'1px solid var(--border,rgba(255,255,255,.08))' };
+    const rowStyleLast = { display:'flex', alignItems:'center', gap:14, padding:'13px 0' };
+    const navStyle = { padding:'8px 11px', borderRadius:9, fontSize:13.5, fontWeight:500, color:'var(--dim,#bcb2a3)', cursor:'pointer' };
+    const navActiveStyle = Object.assign({}, navStyle, { background:accentSoft, color:'var(--text,#f5f0e8)', fontWeight:600 });
+
+    return {
+      themeVars, railStyle, railExpanded, collapsed: !railExpanded, groups, svc,
+      icons:{ menu:this.icon('menu'), search:this.icon('search',17), bell:this.icon('bell'), moon:this.icon('moon',17), gear:this.icon('gear'), plus:this.icon('plus',18), close:this.icon('close'), min:this.icon('min',15), max:this.icon('max',14), reload:this.icon('reload',17), back:this.icon('back',18), fwd:this.icon('fwd',18), popout:this.icon('popout',17), dock:this.icon('dock',15), more:this.icon('more'), hash:this.icon('hash',17), send:this.icon('send',17), check:this.icon('check',16), muteMini:this.icon('muteMini',9) },
+      brandMark: this.logo(26, { accent }),
+      dndBtnStyle, winBtnStyle, chromeBtnStyle, muteBtnStyle, addBtnStyle, footBtnStyle,
+      muteIcon: svcMuted ? this.icon('mute',17) : this.icon('bell',17),
+      hasUnread: count>0 && !dnd, countStr, count,
+      headerBadgeStyle:{ position:'absolute', top:2, right:2, minWidth:15, height:15, padding:'0 3px', borderRadius:8, background:accent, color:accentFg, fontSize:9.5, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center', border:'2px solid var(--header,#14100c)' },
+      countPillStyle:{ minWidth:20, height:19, padding:'0 6px', borderRadius:10, background:accentSoft, color:accent, fontSize:11.5, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center' },
+      badgeStyle:badgeBase, dotStyle, muteDotStyle, rowBadgeStyle,
+      showNotifs: panel==='notifs', showServices: panel==='services', showSettings: panel==='settings',
+      notifs, dnd, popped:this.state.popped,
+      aiPresets, appPresets,
+      themeOptions, densityOptions, accentSwatches, navStyle, navActiveStyle, rowStyle, rowStyleLast,
+      tgDnd: Object.assign({ onClick:this.toggleDnd }, sw(dnd)),
+      tgBadge: Object.assign({ onClick:()=>this.toggleFlag('nbadge') }, sw(this.state.nbadge)),
+      tgPreview: Object.assign({ onClick:()=>this.toggleFlag('npreview') }, sw(this.state.npreview)),
+      tgSound: Object.assign({ onClick:()=>this.toggleFlag('nsound') }, sw(this.state.nsound)),
+      toggleRail:this.toggleRail, openNotifs:this.openNotifs, openServices:this.openServices, openSettings:this.openSettings, closePanel:this.closePanel, stop:this.stop, toggleDnd:this.toggleDnd, toggleActiveMute:this.toggleActiveMute, pop:this.pop, unpop:this.unpop,
+    };
+  }
+}
+</script>
+</body>
+</html>

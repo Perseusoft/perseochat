@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;padding:0;background:#080B14;font-family:'Public Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  *{box-sizing:border-box;}
+  ::selection{background:#F5822E;color:#0B0F19;}
+  @keyframes pcb-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  @keyframes pcb-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+</style>
+</helmet>
+
+<div style="{{ themeVars }}">
+<div style="position:relative;min-height:100vh;background:var(--bg,#080B14);color:var(--text,#E9EDF6);overflow:hidden;font-family:'Public Sans',sans-serif;">
+
+  <!-- starfield -->
+  <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
+    <sc-for list="{{ stars }}" as="s" hint-placeholder-count="30"><span style="{{ s.style }}"></span></sc-for>
+    <div style="position:absolute;top:-10%;right:-6%;width:640px;height:640px;border-radius:50%;background:radial-gradient(circle at center, rgba(46,139,240,.14), transparent 62%);"></div>
+    <div style="position:absolute;bottom:-12%;left:-8%;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle at center, var(--accentGlow,rgba(245,130,43,.13)), transparent 64%);"></div>
+  </div>
+
+  <div style="position:relative;max-width:1120px;margin:0 auto;padding:0 32px;">
+
+    <!-- top bar -->
+    <div style="display:flex;align-items:center;gap:14px;padding:26px 0;border-bottom:1px solid var(--border,rgba(255,255,255,.08));">
+      <div style="display:flex;align-items:center;gap:9px;">{{ markSm }}<span style="font-family:'Space Grotesk';font-weight:700;font-size:15px;letter-spacing:.02em;">PERSEUSOFT</span></div>
+      <span style="color:var(--mute,#5A6480);">/</span>
+      <span style="font-size:14px;color:var(--dim,#9AA3B8);">Brand</span>
+      <span style="color:var(--mute,#5A6480);">/</span>
+      <span style="font-size:14px;font-weight:600;color:var(--accent,#F5822E);">PerseoChat</span>
+      <div style="flex:1;"></div>
+      <span style="font-size:12px;color:var(--mute,#5A6480);font-family:'IBM Plex Mono',monospace;">Guía de identidad · v1.0</span>
+    </div>
+
+    <!-- HERO -->
+    <div style="text-align:center;padding:78px 0 70px;">
+      <div style="display:inline-block;animation:pcb-float 7s ease-in-out infinite;">{{ heroMark }}</div>
+      <div style="font-family:'Space Grotesk';font-weight:700;font-size:clamp(48px,8vw,86px);line-height:.98;letter-spacing:-.02em;margin-top:22px;">Perseo<span style="color:var(--accent,#F5822E);">Chat</span></div>
+      <div style="font-size:clamp(17px,2.4vw,22px);color:var(--dim,#9AA3B8);margin-top:20px;font-weight:500;">Tu universo de conversaciones, en una sola órbita.</div>
+      <div style="font-size:14px;color:var(--mute,#5A6480);margin-top:10px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.55;">El hub de mensajería y chats de IA de Perseusoft — cada servicio, un mundo; todos, tu constelación.</div>
+      <div style="display:flex;justify-content:center;gap:14px;margin-top:34px;flex-wrap:wrap;">
+        <div style="{{ factStyle }}"><span style="color:var(--mute,#5A6480);font-size:11px;text-transform:uppercase;letter-spacing:.1em;">Constelación</span><span style="font-family:'Space Grotesk';font-weight:600;font-size:15px;">Perseo</span></div>
+        <div style="{{ factStyle }}"><span style="color:var(--mute,#5A6480);font-size:11px;text-transform:uppercase;letter-spacing:.1em;">Acento</span><span style="font-family:'Space Grotesk';font-weight:600;font-size:15px;color:var(--accent,#F5822E);">Stellar Amber</span></div>
+        <div style="{{ factStyle }}"><span style="color:var(--mute,#5A6480);font-size:11px;text-transform:uppercase;letter-spacing:.1em;">Familia</span><span style="font-family:'Space Grotesk';font-weight:600;font-size:15px;color:#2E8BF0;">Perseusoft</span></div>
+      </div>
+    </div>
+
+    <!-- ANATOMY -->
+    <div style="{{ sectionStyle }}">
+      <div style="{{ labelStyle }}">01 — El símbolo</div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:48px;align-items:center;">
+        <div style="{{ cardStyle }}display:flex;align-items:center;justify-content:center;padding:44px;min-height:300px;">{{ anatomyMark }}</div>
+        <div>
+          <div style="font-family:'Space Grotesk';font-weight:700;font-size:30px;line-height:1.1;letter-spacing:-.01em;">Un planeta, su órbita<br>y la chispa de una señal.</div>
+          <div style="font-size:15px;color:var(--dim,#9AA3B8);line-height:1.65;margin:18px 0 26px;">El símbolo condensa lo que hace el producto: reúne mundos dispersos en una sola órbita y avisa cuando algo importa.</div>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;gap:14px;"><span style="{{ dotBlue }}"></span><div><div style="font-weight:600;font-size:14.5px;">El planeta + constelación</div><div style="font-size:13.5px;color:var(--dim,#9AA3B8);line-height:1.5;">Tu espacio de trabajo y las conversaciones conectadas dentro de él.</div></div></div>
+            <div style="display:flex;gap:14px;"><span style="{{ dotAmber }}"></span><div><div style="font-weight:600;font-size:14.5px;">La órbita</div><div style="font-size:13.5px;color:var(--dim,#9AA3B8);line-height:1.5;">Cada servicio (Slack, Teams, Claude, Gemini…) girando en un mismo sistema.</div></div></div>
+            <div style="display:flex;gap:14px;"><span style="{{ dotSpark }}"></span><div><div style="font-weight:600;font-size:14.5px;">La estrella-señal</div><div style="font-size:13.5px;color:var(--dim,#9AA3B8);line-height:1.5;">El destello ámbar: la notificación, el pulso vivo de PerseoChat.</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOCKUPS / VARIATIONS -->
+    <div style="{{ sectionStyle }}">
+      <div style="{{ labelStyle }}">02 — Lockups y variantes</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;">
+        <div style="{{ cardStyle }}padding:34px;display:flex;flex-direction:column;align-items:center;gap:18px;justify-content:center;min-height:190px;">
+          <div style="display:flex;align-items:center;gap:14px;">{{ markMd }}<span style="font-family:'Space Grotesk';font-weight:700;font-size:26px;letter-spacing:-.01em;">Perseo<span style="color:var(--accent,#F5822E);">Chat</span></span></div>
+          <span style="{{ tagStyle }}">Horizontal · principal</span>
+        </div>
+        <div style="{{ cardStyle }}padding:34px;display:flex;flex-direction:column;align-items:center;gap:14px;justify-content:center;min-height:190px;">
+          {{ markMd }}<span style="font-family:'Space Grotesk';font-weight:700;font-size:20px;letter-spacing:-.01em;margin-top:2px;">Perseo<span style="color:var(--accent,#F5822E);">Chat</span></span>
+          <span style="{{ tagStyle }}">Vertical · apilado</span>
+        </div>
+        <div style="{{ cardStyle }}padding:34px;display:flex;flex-direction:column;align-items:center;gap:18px;justify-content:center;min-height:190px;">
+          {{ markTile }}
+          <span style="{{ tagStyle }}">Ícono de app</span>
+        </div>
+        <div style="background:#E9EDF6;border-radius:16px;border:1px solid var(--border,rgba(255,255,255,.08));padding:34px;display:flex;flex-direction:column;align-items:center;gap:18px;justify-content:center;min-height:190px;">
+          <div style="display:flex;align-items:center;gap:12px;">{{ markMonoNavy }}<span style="font-family:'Space Grotesk';font-weight:700;font-size:22px;color:#0E1526;">PerseoChat</span></div>
+          <span style="font-size:12px;color:#5A6480;font-family:'IBM Plex Mono',monospace;">Mono · sobre claro</span>
+        </div>
+        <div style="{{ cardStyle }}padding:34px;display:flex;flex-direction:column;align-items:center;gap:18px;justify-content:center;min-height:190px;">
+          <div style="display:flex;align-items:center;gap:12px;">{{ markMonoWhite }}<span style="font-family:'Space Grotesk';font-weight:700;font-size:22px;color:#E9EDF6;">PerseoChat</span></div>
+          <span style="{{ tagStyle }}">Mono · sobre oscuro</span>
+        </div>
+        <div style="background:var(--accent,#F5822E);border-radius:16px;padding:34px;display:flex;flex-direction:column;align-items:center;gap:18px;justify-content:center;min-height:190px;">
+          <div style="display:flex;align-items:center;gap:12px;">{{ markMonoInk }}<span style="font-family:'Space Grotesk';font-weight:700;font-size:22px;color:#0B0F19;">PerseoChat</span></div>
+          <span style="font-size:12px;color:#0B0F19;opacity:.7;font-family:'IBM Plex Mono',monospace;">Mono · sobre acento</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLEARSPACE + MINSIZE -->
+    <div style="{{ sectionStyle }}">
+      <div style="{{ labelStyle }}">03 — Aire y tamaño mínimo</div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;">
+        <div style="{{ cardStyle }}padding:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:240px;">
+          <div style="position:relative;padding:28px;border:1.5px dashed var(--mute,#5A6480);border-radius:14px;">{{ clearMark }}</div>
+          <span style="{{ tagStyle }}">Aire mínimo = altura de la estrella-señal (×1) a cada lado</span>
+        </div>
+        <div style="{{ cardStyle }}padding:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;min-height:240px;">
+          <div style="display:flex;align-items:flex-end;gap:30px;">
+            <sc-for list="{{ minMarks }}" as="m" hint-placeholder-count="3">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">{{ m.mark }}<span style="font-size:11px;color:var(--mute,#5A6480);font-family:'IBM Plex Mono',monospace;">{{ m.label }}</span></div>
+            </sc-for>
+          </div>
+          <span style="{{ tagStyle }}">No usar el ícono por debajo de 24 px</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLOROMETRÍA -->
+    <div style="{{ sectionStyle }}">
+      <div style="{{ labelStyle }}">04 — Colorometría</div>
+      <div style="font-family:'Space Grotesk';font-weight:700;font-size:26px;margin-bottom:8px;">Sistema cósmico</div>
+      <div style="font-size:14.5px;color:var(--dim,#9AA3B8);max-width:560px;line-height:1.6;margin-bottom:30px;">Base de espacio profundo heredada de Perseusoft, firmada por el ámbar estelar de PerseoChat. El azul nebular mantiene el vínculo con la casa madre.</div>
+      <sc-for list="{{ palette }}" as="grp" hint-placeholder-count="3">
+        <div style="margin-bottom:26px;">
+          <div style="font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mute,#5A6480);margin-bottom:12px;">{{ grp.name }}</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:14px;">
+            <sc-for list="{{ grp.items }}" as="c" hint-placeholder-count="3">
+              <div style="{{ cardStyle }}overflow:hidden;">
+                <div style="{{ c.chipStyle }}"></div>
+                <div style="padding:13px 14px;">
+                  <div style="font-family:'Space Grotesk';font-weight:600;font-size:14.5px;">{{ c.name }}</div>
+                  <div style="font-size:12px;color:var(--dim,#9AA3B8);line-height:1.4;margin:2px 0 8px;">{{ c.role }}</div>
+                  <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent,#F5822E);">{{ c.hex }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- TYPOGRAPHY -->
+    <div style="{{ sectionStyle }}">
+      <div style="{{ labelStyle }}">05 — Tipografía</div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;">
+        <div style="{{ cardStyle }}padding:30px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;"><span style="font-family:'Space Grotesk';font-weight:700;font-size:19px;">Space Grotesk</span><span style="{{ tagStyle }}">Display · títulos</span></div>
+          <div style="font-family:'Space Grotesk';font-weight:700;font-size:56px;line-height:1;letter-spacing:-.02em;">Aa</div>
+          <div style="font-family:'Space Grotesk';font-size:15px;color:var(--dim,#9AA3B8);margin-top:14px;letter-spacing:.02em;">ABCDEFGHIJKLM · 0123456789</div>
+          <div style="display:flex;gap:8px;margin-top:16px;">
+            <span style="{{ weightChip }}">Regular</span><span style="{{ weightChip }}">Medium</span><span style="{{ weightChipActive }}">Bold</span>
+          </div>
+        </div>
+        <div style="{{ cardStyle }}padding:30px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;"><span style="font-family:'Public Sans';font-weight:700;font-size:19px;">Public Sans</span><span style="{{ tagStyle }}">Texto · UI y párrafos</span></div>
+          <div style="font-family:'Public Sans';font-weight:600;font-size:56px;line-height:1;">Aa</div>
+          <div style="font-size:15px;color:var(--dim,#9AA3B8);margin-top:14px;line-height:1.6;">Legible en cualquier órbita — de la notificación al cuerpo de texto. abcdefghijklm · 0123456789</div>
+          <div style="display:flex;gap:8px;margin-top:16px;">
+            <span style="{{ weightChip }}">Regular</span><span style="{{ weightChipActive }}">Semibold</span><span style="{{ weightChip }}">Bold</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAMILY -->
+    <div style="{{ sectionStyle }}">
+      <div style="{{ labelStyle }}">06 — La familia Perseusoft</div>
+      <div style="font-size:14.5px;color:var(--dim,#9AA3B8);max-width:600px;line-height:1.6;margin-bottom:30px;">Cada producto toma un nombre del cosmos y un color-firma propio, compartiendo el mismo símbolo base. PerseoChat es la estrella ámbar de la constelación.</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;">
+        <sc-for list="{{ family }}" as="f" hint-placeholder-count="4">
+          <div style="{{ f.cardStyle }}">
+            {{ f.mark }}
+            <div style="font-family:'Space Grotesk';font-weight:700;font-size:19px;margin-top:16px;">{{ f.name }}</div>
+            <div style="font-size:13px;color:var(--dim,#9AA3B8);margin-top:3px;">{{ f.role }}</div>
+            <div style="{{ f.badgeStyle }}">{{ f.tag }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- footer -->
+    <div style="padding:44px 0 60px;margin-top:40px;border-top:1px solid var(--border,rgba(255,255,255,.08));display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      {{ markSm }}
+      <span style="font-size:13px;color:var(--dim,#9AA3B8);">PerseoChat · un producto de <span style="color:var(--text,#E9EDF6);font-weight:600;">Perseusoft</span></span>
+      <div style="flex:1;"></div>
+      <span style="font-size:12px;color:var(--mute,#5A6480);font-family:'IBM Plex Mono',monospace;">Guía de marca · {{ year }}</span>
+    </div>
+
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Vista&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#F5822E&quot;,&quot;options&quot;:[&quot;#F5822E&quot;,&quot;#2E8BF0&quot;,&quot;#22C7B8&quot;,&quot;#8B5CF6&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Marca&quot;}}">
+class Component extends DCLogic {
+  logo(size, opt){
+    opt = opt || {};
+    const e = React.createElement;
+    const uid = 'pc' + (this._n = (this._n||0) + 1);
+    const acc = opt.accent || '#F5822E';
+    const blue = '#2E8BF0';
+    const mono = !!opt.mono;
+    const mc = opt.monoColor || '#E9EDF6';
+    const ringStroke = mono ? mc : ('url(#'+uid+'r)');
+    const planetFill = mono ? 'none' : ('url(#'+uid+'p)');
+    const starCol = mono ? mc : '#DCE3F2';
+
+    const defs = mono ? null : e('defs', { key:'d' }, [
+      e('radialGradient', { id:uid+'p', key:'p', cx:'36%', cy:'30%', r:'78%' }, [
+        e('stop', { offset:'0%', stopColor:'#2E3C68', key:0 }),
+        e('stop', { offset:'55%', stopColor:'#141E38', key:1 }),
+        e('stop', { offset:'100%', stopColor:'#090F20', key:2 }),
+      ]),
+      e('linearGradient', { id:uid+'r', key:'r', x1:'0', y1:'0', x2:'1', y2:'1' }, [
+        e('stop', { offset:'0%', stopColor:blue, key:0 }),
+        e('stop', { offset:'100%', stopColor:acc, key:1 }),
+      ]),
+    ]);
+
+    const kids = [];
+    if (opt.tile) kids.push(e('rect', { key:'t', x:1, y:1, width:118, height:118, rx:28, fill: opt.tileFill || '#0E1526', stroke:'rgba(255,255,255,.10)', strokeWidth:1 }));
+    if (!mono) kids.push(e('circle', { key:'gl', cx:60, cy:60, r:31, fill:acc, opacity:0.10 }));
+
+    // orbit ring + signal bead
+    kids.push(e('g', { key:'ring', transform:'rotate(-22 60 60)' }, [
+      e('ellipse', { key:'e', cx:60, cy:60, rx:50, ry:18, fill:'none', stroke:ringStroke, strokeWidth:3.2, opacity: mono?0.85:1, strokeLinecap:'round' }),
+      !mono && e('circle', { key:'bg', cx:110, cy:60, r:9, fill:acc, opacity:0.32 }),
+      e('circle', { key:'bd', cx:110, cy:60, r:5.4, fill: mono?mc:acc }),
+    ].filter(Boolean)));
+
+    // planet
+    kids.push(e('circle', { key:'pl', cx:60, cy:60, r:22, fill:planetFill, stroke: mono?mc:'rgba(255,255,255,.14)', strokeWidth: mono?2:1 }));
+
+    // constellation links
+    const line = (x1,y1,x2,y2,k) => e('line', { key:k, x1, y1, x2, y2, stroke:starCol, strokeWidth:1.2, opacity:0.5, strokeLinecap:'round' });
+    kids.push(line(51,54,60,48,'l1'));
+    kids.push(line(60,48,69,55,'l2'));
+    kids.push(line(60,48,63,66,'l3'));
+    // minor stars
+    [[51,54,2.0],[69,55,2.2],[63,66,1.8]].forEach((s,i) => kids.push(e('circle', { key:'st'+i, cx:s[0], cy:s[1], r:s[2], fill:starCol })));
+    // signal star at B (60,48) with sparkle
+    if (!mono) kids.push(e('circle', { key:'sgb', cx:60, cy:48, r:7, fill:acc, opacity:0.30 }));
+    kids.push(e('line', { key:'spv', x1:60, y1:40.5, x2:60, y2:55.5, stroke: mono?mc:acc, strokeWidth:1.4, strokeLinecap:'round' }));
+    kids.push(e('line', { key:'sph', x1:52.5, y1:48, x2:67.5, y2:48, stroke: mono?mc:acc, strokeWidth:1.4, strokeLinecap:'round' }));
+    kids.push(e('circle', { key:'sgc', cx:60, cy:48, r:2.6, fill: mono?mc:acc }));
+
+    return e('svg', { width:size, height:size, viewBox:'0 0 120 120', fill:'none', style:{ display:'block', overflow:'visible' } }, [defs].concat(kids).filter(Boolean));
+  }
+
+  renderVals(){
+    const theme = (this.props.theme != null ? this.props.theme : 'dark');
+    const dark = theme !== 'light';
+    const accent = this.props.accent != null ? this.props.accent : '#F5822E';
+    const T = dark ? {
+      bg:'#080B14', panel:'#0E1526', panel2:'#131D34', border:'rgba(255,255,255,.08)', text:'#E9EDF6', dim:'#9AA3B8', mute:'#5A6480'
+    } : {
+      bg:'#EEF1F8', panel:'#FFFFFF', panel2:'#F5F7FC', border:'rgba(12,22,44,.10)', text:'#0E1526', dim:'#4A5570', mute:'#8A93AB'
+    };
+    const themeVars = { display:'contents', '--bg':T.bg, '--panel':T.panel, '--panel2':T.panel2, '--border':T.border, '--text':T.text, '--dim':T.dim, '--mute':T.mute, '--accent':accent, '--accentGlow':'rgba(245,130,43,.13)' };
+
+    // starfield
+    let seed = 13; const rnd = () => { seed = (seed*9301+49297) % 233280; return seed/233280; };
+    const stars = [];
+    for (let i=0;i<48;i++){
+      const amber = i % 12 === 0;
+      const sz = (rnd()*1.8+1).toFixed(1);
+      stars.push({ style:{ position:'absolute', left:(rnd()*100).toFixed(2)+'%', top:(rnd()*100).toFixed(2)+'%', width:sz+'px', height:sz+'px', borderRadius:'50%', background: amber ? '#F5B27A' : '#CFE0FF', opacity:(rnd()*0.55+0.2).toFixed(2), boxShadow: amber ? '0 0 6px #F5822E' : 'none' } });
+    }
+
+    const cardBase = { background:'var(--panel,#0E1526)', border:'1px solid var(--border,rgba(255,255,255,.08))', borderRadius:'16px' };
+    const cardStyle = 'background:var(--panel,#0E1526);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:16px;';
+    const sectionStyle = 'padding:36px 0;border-top:1px solid var(--border,rgba(255,255,255,.08));';
+    const labelStyle = 'font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent,#F5822E);margin-bottom:22px;font-family:\'IBM Plex Mono\',monospace;';
+    const tagStyle = 'font-size:12px;color:var(--mute,#5A6480);font-family:\'IBM Plex Mono\',monospace;';
+    const factStyle = 'display:flex;flex-direction:column;gap:4px;align-items:center;padding:14px 22px;border:1px solid var(--border,rgba(255,255,255,.08));border-radius:12px;background:var(--panel,#0E1526);';
+    const weightChip = 'font-size:12px;padding:5px 11px;border-radius:7px;background:var(--panel2,#131D34);color:var(--dim,#9AA3B8);border:1px solid var(--border,rgba(255,255,255,.08));';
+    const weightChipActive = 'font-size:12px;padding:5px 11px;border-radius:7px;background:var(--accent,#F5822E);color:#0B0F19;font-weight:600;';
+    const dotBase = 'width:12px;height:12px;border-radius:50%;flex:0 0 auto;margin-top:4px;';
+
+    // palette
+    const palette = [
+      { name:'Bases · Espacio profundo', items:[
+        { name:'Void', role:'Fondo profundo', hex:'#080B14' },
+        { name:'Cosmos', role:'Superficies / paneles', hex:'#0E1526' },
+        { name:'Órbita', role:'Bordes y elevación', hex:'#1B2540' },
+      ]},
+      { name:'Firma', items:[
+        { name:'Stellar Amber', role:'Acento primario · marca', hex:'#F5822E' },
+        { name:'Nebula Blue', role:'Secundario · familia', hex:'#2E8BF0' },
+        { name:'Aurora', role:'Gradiente destacado', hex:'#F5822E → #E23E8C', grad:'linear-gradient(120deg,#F5822E,#E23E8C)' },
+      ]},
+      { name:'Neutros', items:[
+        { name:'Silver', role:'Texto principal', hex:'#E9EDF6' },
+        { name:'Stardust', role:'Texto secundario', hex:'#9AA3B8' },
+        { name:'Comet', role:'Texto tenue / deshab.', hex:'#5A6480' },
+      ]},
+    ].map(g => ({ name:g.name, items: g.items.map(c => ({ name:c.name, role:c.role, hex:c.hex, chipStyle:{ height:'68px', background: c.grad || c.hex } })) }));
+
+    // family
+    const fam = [
+      { name:'Perseusoft', role:'Casa madre', tag:'Marca corporativa', accent:'#2E8BF0', active:false },
+      { name:'PerseoChat', role:'Hub de mensajería + IA', tag:'Este producto', accent:accent, active:true },
+      { name:'PerseoFlow', role:'Automatización', tag:'Concepto', accent:'#22C7B8', active:false },
+      { name:'PerseoDesk', role:'Soporte y tickets', tag:'Concepto', accent:'#8B5CF6', active:false },
+    ];
+    const family = fam.map(f => ({
+      name:f.name, role:f.role, tag:f.tag,
+      mark: this.logo(64, { accent:f.accent, tile:true, tileFill: f.active ? '#141E38' : '#0E1526' }),
+      cardStyle: 'display:flex;flex-direction:column;align-items:center;text-align:center;padding:30px 22px;border-radius:16px;background:var(--panel,#0E1526);border:1px solid '+(f.active ? f.accent : 'var(--border,rgba(255,255,255,.08))')+';'+(f.active ? 'box-shadow:0 0 0 1px '+f.accent+',0 14px 40px -18px '+f.accent+';' : ''),
+      badgeStyle: 'margin-top:14px;font-size:11px;font-weight:600;letter-spacing:.04em;padding:4px 11px;border-radius:20px;'+(f.active ? 'background:'+f.accent+';color:#0B0F19;' : 'background:var(--panel2,#131D34);color:var(--dim,#9AA3B8);'),
+    }));
+
+    const minMarks = [ {size:56,label:'56px'}, {size:40,label:'40px'}, {size:24,label:'24px · mín'} ].map(m => ({ mark:this.logo(m.size), label:m.label }));
+
+    return {
+      themeVars, stars, cardStyle, sectionStyle, labelStyle, tagStyle, factStyle, weightChip, weightChipActive,
+      dotBlue: dotBase + 'background:#2E8BF0;',
+      dotAmber: dotBase + 'background:'+accent+';',
+      dotSpark: dotBase + 'background:#E9EDF6;box-shadow:0 0 8px '+accent+';',
+      heroMark: this.logo(150),
+      anatomyMark: this.logo(210),
+      markMd: this.logo(56),
+      markSm: this.logo(30),
+      markTile: this.logo(88, { tile:true, tileFill:'#141E38' }),
+      markMonoWhite: this.logo(48, { mono:true, monoColor:'#E9EDF6' }),
+      markMonoNavy: this.logo(48, { mono:true, monoColor:'#0E1526' }),
+      markMonoInk: this.logo(48, { mono:true, monoColor:'#0B0F19' }),
+      clearMark: this.logo(96),
+      minMarks, palette, family,
+      year: new Date().getFullYear(),
+    };
+  }
+}
+</script>
+</body>
+</html>
