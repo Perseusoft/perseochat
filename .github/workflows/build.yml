@@ -31,11 +31,9 @@ jobs:
       - name: Install packaging tooling
         run: |
           sudo apt-get update
-          sudo apt-get install -y rpm flatpak flatpak-builder elfutils libarchive-tools
-          sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          sudo flatpak install -y flathub org.electronjs.Electron2.BaseApp//24.08 \
-            org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08 || true
-          sudo snap install snapcraft --classic || sudo apt-get install -y snapcraft
+          # rpmbuild for .rpm; dpkg-deb ships on ubuntu for .deb; AppImage is
+          # self-contained. (snap/flatpak tooling omitted — those targets are deferred.)
+          sudo apt-get install -y rpm elfutils libarchive-tools
 
       - run: npm install --no-audit --no-fund
 

@@ -64,27 +64,24 @@ around it, and an **amber spark** when something needs you.
 
 | Architecture | Formats |
 |---|---|
-| **x86_64** | `.deb` · `.rpm` · `.AppImage` · `snap` · `flatpak` |
-| **aarch64 (ARM64)** | `.deb` · `.rpm` · `.AppImage` · `snap` · `flatpak` |
+| **x86_64** | `.deb` · `.rpm` · `.AppImage` |
+| **aarch64 (ARM64)** | `.deb` · `.rpm` · `.AppImage` |
 
-**On the roadmap:** Windows and macOS builds — the shell is cross-platform, so
-these are packaging work, not a rewrite.
+**On the roadmap:** `snap` and `flatpak` packages, plus Windows and macOS builds
+— the shell is cross-platform, so these are packaging work, not a rewrite.
 
 ## Download
 
 Pick your architecture and format. **AppImage** runs on any distro
-(`chmod +x` and launch); `.deb`/`.rpm` install system-wide; `snap`/`flatpak`
-are sandboxed.
+(`chmod +x` and launch); `.deb`/`.rpm` install system-wide.
 
 | Format | x86_64 | aarch64 (ARM64) |
 | :-- | :--: | :--: |
 | **AppImage** — portable, any distro | [⬇ Download](https://get.perseusoft.tech/latest/x64/PerseoChat-x64.AppImage) | [⬇ Download](https://get.perseusoft.tech/latest/arm64/PerseoChat-arm64.AppImage) |
 | **Debian / Ubuntu** — `.deb` | [⬇ Download](https://get.perseusoft.tech/latest/x64/PerseoChat-x64.deb) | [⬇ Download](https://get.perseusoft.tech/latest/arm64/PerseoChat-arm64.deb) |
 | **Fedora / RHEL / openSUSE** — `.rpm` | [⬇ Download](https://get.perseusoft.tech/latest/x64/PerseoChat-x64.rpm) | [⬇ Download](https://get.perseusoft.tech/latest/arm64/PerseoChat-arm64.rpm) |
-| **Snap** — `.snap` | [⬇ Download](https://get.perseusoft.tech/latest/x64/PerseoChat-x64.snap) | [⬇ Download](https://get.perseusoft.tech/latest/arm64/PerseoChat-arm64.snap) |
-| **Flatpak** — `.flatpak` | [⬇ Download](https://get.perseusoft.tech/latest/x64/PerseoChat-x64.flatpak) | [⬇ Download](https://get.perseusoft.tech/latest/arm64/PerseoChat-arm64.flatpak) |
 
-*Windows & macOS builds are coming — see [Platforms](#platforms).*
+*`snap`, `flatpak`, Windows & macOS builds are coming — see [Platforms](#platforms).*
 
 > Files are served from the **`perseochat-storage`** Cloudflare R2 bucket behind
 > `get.perseusoft.tech`. `latest/` always points to the newest release;
@@ -105,9 +102,8 @@ npm run dev            # run it
 npm run dist           # build installers for the host architecture
 ```
 
-`snap` needs `snapcraft`, `flatpak` needs `flatpak-builder` + the
-`org.electronjs.Electron2.BaseApp` runtime, `rpm` needs `rpmbuild`. All formats
-for both architectures are produced by CI on every `v*` tag.
+`.rpm` needs `rpmbuild`, `.deb` needs `dpkg`; `AppImage` is self-contained. All
+formats for both architectures are produced by CI on every `v*` tag.
 
 ## How it's built
 

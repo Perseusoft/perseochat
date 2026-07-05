@@ -23,12 +23,14 @@ linux:
     - "--ozone-platform-hint=auto"
     - "--enable-features=WebRTCPipeWireCapturer"
     - "--disable-gpu"
+  # deb / rpm / AppImage are electron-builder's battle-tested Linux targets and
+  # cover Debian·Ubuntu / Fedora·RHEL·openSUSE / any-distro. snap and flatpak
+  # are deferred: flatpak hits electron-builder's `--executable` bug and snap
+  # needs LXD in CI — both are roadmap, tracked separately.
   target:
     - deb
     - rpm
     - AppImage
-    - snap
-    - flatpak
 deb:
   depends:
     - libnotify4
