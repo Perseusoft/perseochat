@@ -14,7 +14,11 @@ linux:
   # scoped package name and looked wrong in software centers).
   executableName: perseochat
   category: Network;InstantMessaging;Chat
-  icon: build/icon.png
+  # A directory of pre-sized PNGs (16..512) — app-builder's size detection from a
+  # single PNG is flaky and intermittently falls back to 0x0 (icon then lands in
+  # hicolor/0x0/ which no icon theme reads, so the app shows a generic icon even
+  # after install). Explicit NxN.png files make every size deterministic.
+  icon: build/icons
   # electron-builder 24 merges these flat into the .desktop entry; Name and
   # StartupWMClass already default to the product name.
   desktop:
