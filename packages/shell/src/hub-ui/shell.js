@@ -164,7 +164,7 @@ function ensureWebview(id) {
     if (e.channel === "perseo:notification") addNotif(id, e.args[0] || {});
     else if (e.channel === "perseo:badge") { unreadBadge.set(id, e.args[0] || 0); renderRail(); }
   });
-  wv.addEventListener("dom-ready", () => { try { wv.send("perseo:mute", isMuted(id)); wv.send("perseo:dnd", doc.settings.dnd); } catch {} if (id === activeId) updateHeader(); });
+  wv.addEventListener("dom-ready", () => { try { wv.send("perseo:mute", isMuted(id)); wv.send("perseo:dnd", doc.settings.dnd); } catch {} applyZoom(id); if (id === activeId) updateHeader(); });
   wv.addEventListener("did-navigate", () => id === activeId && updateHeader());
   wv.addEventListener("did-navigate-in-page", () => id === activeId && updateHeader());
   $("views").appendChild(wv);
@@ -172,6 +172,24 @@ function ensureWebview(id) {
   return wv;
 }
 function activeWv() { return activeId ? wvs.get(activeId) : null; }
+
+// ---------- per-service zoom ----------
+const ZMIN = 0.5, ZMAX = 2.0, ZSTEP = 0.1;
+function zoomOf(id) { const s = svc(id); return (s && s.zoom) || 1; }
+function clampZoom(z) { return Math.min(ZMAX, Math.max(ZMIN, Math.round(z * 100) / 100)); }
+function applyZoom(id) { const wv = wvs.get(id); if (wv) try { wv.setZoomFactor(zoomOf(id)); } catch {} }
+function setZoom(id, z) {
+  const s = svc(id); if (!s) return;
+  s.zoom = clampZoom(z); if (s.zoom === 1) delete s.zoom;
+  persist(); applyZoom(id);
+}
+function zoomBy(id, d) { setZoom(id, zoomOf(id) + d); }
+function zoomCmd(dir) {
+  if (!activeId) return;
+  if (dir === "in") zoomBy(activeId, ZSTEP);
+  else if (dir === "out") zoomBy(activeId, -ZSTEP);
+  else setZoom(activeId, 1);
+}
 function capacity() { return 1; }
 function visibleIds() {
   const ids = openOrder.filter((id) => { const s = svc(id); return s && inMyWin(s); });
@@ -326,6 +344,7 @@ function renderNotif() {
   const unread = notifs.filter((n) => !n.read).length;
   $("npCount").textContent = unread;
   $("bellDot").hidden = unread === 0;
+  $("moreDot").hidden = unread === 0;
   $("npDnd").hidden = !doc.settings.dnd;
   const list = $("npList"); list.innerHTML = "";
   if (!notifs.length) { list.appendChild(el("div", { class: "np-empty", text: t("noNotif") })); return; }
@@ -483,6 +502,10 @@ $("svcHeader").addEventListener("click", (e) => {
       { label: t("rename"), click: async () => { const n = await askText(t("rename"), displayName(s)); if (n) renameService(activeId, n); } },
       { label: t("reloadItem"), click: () => wv && wv.reload() },
       { div: 1 },
+      { label: t("zoomIn"), click: () => zoomBy(activeId, ZSTEP) },
+      { label: t("zoomOut"), click: () => zoomBy(activeId, -ZSTEP) },
+      { label: t("zoomReset", Math.round(zoomOf(activeId) * 100)), click: () => setZoom(activeId, 1) },
+      { div: 1 },
       { label: t("removeItem"), danger: 1, click: () => removeService(activeId) },
     ]);
   }
@@ -578,6 +601,16 @@ function fillIcons() { document.querySelectorAll("[data-i]").forEach((b) => b.in
 $("menuBtn").onclick = toggleExpand;
 $("themeBtn").onclick = toggleTheme;
 $("bellBtn").onclick = () => toggleNotifPanel();
+// Overflow menu: holds the top-bar actions that get hidden when the window is
+// too narrow to show them all (see the responsive rules in shell.css).
+$("moreBtn").onclick = () => {
+  const r = $("moreBtn").getBoundingClientRect();
+  const unread = notifs.filter((n) => !n.read).length;
+  showCtx(r.right, r.bottom + 4, [
+    { label: t("notif") + (unread ? " (" + unread + ")" : ""), click: () => toggleNotifPanel() },
+    { label: doc.settings.theme === "light" ? t("themeDark") : t("themeLight"), click: toggleTheme },
+  ]);
+};
 $("searchBtn").onclick = openPalette;
 $("addBtn").onclick = openAdd;
 $("spacesBtn").onclick = () => P.openLauncher();
@@ -608,6 +641,9 @@ window.addEventListener("keydown", (e) => {
   const mod = e.ctrlKey || e.metaKey;
   if (!mod) return;
   if (e.key.toLowerCase() === "k") { e.preventDefault(); openPalette(); return; }
+  if (e.key === "=" || e.key === "+") { e.preventDefault(); zoomCmd("in"); return; }
+  if (e.key === "-" || e.key === "_") { e.preventDefault(); zoomCmd("out"); return; }
+  if (e.key === "0") { e.preventDefault(); zoomCmd("reset"); return; }
   const list = doc.workspaces || [];
   // Ctrl/Cmd + 1..9 → jump to that workspace (opens or focuses its app).
   if (e.key >= "1" && e.key <= "9") {
@@ -622,6 +658,8 @@ window.addEventListener("keydown", (e) => {
   }
 });
 P.win.onMaximized(() => {});
+// Zoom keys / Ctrl+wheel pressed inside a service page arrive here from main.
+P.onZoomCmd(zoomCmd);
 
 // ---------- boot ----------
 function applyI18n() {

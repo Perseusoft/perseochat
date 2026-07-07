@@ -30,21 +30,21 @@ button { font: inherit; color: inherit; cursor: pointer; border: 0; background: 
   border-bottom: 1px solid var(--line); -webkit-app-region: drag;
 }
 #titlebar button, #titlebar .searchbar, #titlebar input { -webkit-app-region: no-drag; }
-.tb-left { display: flex; align-items: center; gap: 8px; min-width: 200px; }
-.tb-center { flex: 1; display: flex; justify-content: center; }
-.tb-right { display: flex; align-items: center; gap: 4px; min-width: 200px; justify-content: flex-end; }
+.tb-left { display: flex; align-items: center; gap: 8px; flex: 0 1 auto; min-width: 0; overflow: hidden; }
+.tb-center { flex: 1 1 auto; display: flex; justify-content: center; min-width: 0; }
+.tb-right { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; justify-content: flex-end; }
 .tbtn { width: 34px; height: 34px; border-radius: 8px; color: var(--muted); font-size: 15px; display: grid; place-items: center; }
 .tbtn:hover { background: var(--panel2); color: var(--text); }
 .tbtn.on { background: var(--accent); color: #fff; }
 .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 15px; letter-spacing: .2px; }
 .brand-badge { width: 28px; height: 28px; border-radius: 8px; object-fit: cover; display: block; }
 .searchbar {
-  width: min(560px, 60vw); height: 34px; border-radius: 9px; background: var(--panel2);
+  width: min(560px, 60vw); max-width: 100%; height: 34px; border-radius: 9px; background: var(--panel2);
   border: 1px solid var(--line); color: var(--muted); display: flex; align-items: center;
-  gap: 8px; padding: 0 10px; font-size: 13px;
+  gap: 8px; padding: 0 10px; font-size: 13px; overflow: hidden;
 }
 .searchbar:hover { border-color: var(--muted); }
-.searchbar .grow { flex: 1; text-align: left; }
+.searchbar .grow { flex: 1; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .searchbar kbd { background: var(--tile); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; font-size: 11px; }
 .wbtn { width: 40px; height: 34px; border-radius: 7px; color: var(--muted); font-size: 14px; }
 .wbtn:hover { background: var(--panel2); color: var(--text); }
@@ -269,3 +269,29 @@ body.dragging #views webview { pointer-events: none; }
 
 /* Titlebar always on top so its window buttons are never trapped by an overlay */
 #titlebar { position: relative; z-index: 250; }
+
+/* ---------- responsive titlebar ---------- */
+/* As the window narrows, the top bar sheds the least essential pieces first
+   (shortcut hint → brand text → search text) so it never crowds or overflows.
+   The window buttons (min/max/close) never shrink. */
+@media (max-width: 940px) {
+  .searchbar kbd { display: none; }
+}
+@media (max-width: 760px) {
+  .brand .bname, .wsname { display: none; }
+  .brand { gap: 0; }
+  #titlebar { gap: 6px; }
+}
+@media (max-width: 600px) {
+  /* Search collapses to a single magnifier icon that still opens the palette. */
+  .searchbar { width: 34px; flex: 0 0 34px; padding: 0; justify-content: center; gap: 0; }
+  .searchbar .grow { display: none; }
+}
+/* The overflow "⋯" button only appears once the bar runs out of room. */
+#moreBtn { display: none; }
+@media (max-width: 520px) {
+  /* Fold the secondary actions (theme, notifications) into the ⋯ menu. */
+  #themeBtn, #bellBtn { display: none; }
+  #moreBtn { display: grid; }
+  .wbtn { width: 34px; }
+}

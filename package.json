@@ -1,6 +1,6 @@
 {
   "name": "perseochat",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "PerseoChat — unified messaging + AI hub for Linux (Slack, Teams, Discord, WhatsApp, Telegram, Claude, ChatGPT, Gemini…), by PerseuSoft",
   "author": "PerseuSoft <hola@perseusoft.tech>",

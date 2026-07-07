@@ -77,6 +77,25 @@ function startHub({ productName, icon }) {
     if (contents.getType() !== "webview") return;
     prepareSession(contents.session);
     applyServiceNav(contents);
+    // Ctrl +/-/0 pressed *inside* a service page won't bubble to the shell,
+    // so intercept it here and let the shell renderer own the zoom state.
+    contents.on("before-input-event", (event, input) => {
+      if (input.type !== "keyDown" || !(input.control || input.meta)) return;
+      const k = input.key;
+      let dir = null;
+      if (k === "=" || k === "+" || k === "Add") dir = "in";
+      else if (k === "-" || k === "_" || k === "Subtract") dir = "out";
+      else if (k === "0") dir = "reset";
+      if (!dir) return;
+      event.preventDefault();
+      const host = contents.hostWebContents;
+      if (host && !host.isDestroyed()) host.send("zoom:cmd", dir);
+    });
+    // Ctrl + mouse wheel → mirror Electron's native zoom into the shell state.
+    contents.on("zoom-changed", (_e2, direction) => {
+      const host = contents.hostWebContents;
+      if (host && !host.isDestroyed()) host.send("zoom:cmd", direction === "in" ? "in" : "out");
+    });
   });
 
   const windowIds = new Map(); // BrowserWindow -> workspace id
@@ -92,7 +111,7 @@ function startHub({ productName, icon }) {
   function createShellWindow(wsId, focus) {
     wsId = wsId || "main";
     const win = new BrowserWindow({
-      width: 1320, height: 880, minWidth: 820, minHeight: 560,
+      width: 1320, height: 880, minWidth: 420, minHeight: 480,
       title: productName, icon, frame: false, backgroundColor: "#0B0F19",
       webPreferences: {
         preload: HUB_PRELOAD, contextIsolation: true, nodeIntegration: false,

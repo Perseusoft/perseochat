@@ -47,4 +47,5 @@ contextBridge.exposeInMainWorld("perseo", {
   pinWorkspace: (wsId) => ipcRenderer.send("ws:pin", wsId),
   openLauncher: () => ipcRenderer.send("open:launcher"),
   onStoreChanged: (cb) => ipcRenderer.on("store:changed", cb),
+  onZoomCmd: (cb) => ipcRenderer.on("zoom:cmd", (_e, dir) => cb(dir)),
 });

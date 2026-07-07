@@ -1,7 +1,7 @@
 {
   "name": "@perseochat/app",
   "productName": "PerseoChat",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "PerseoChat — unified messaging + AI hub for Linux, by PerseuSoft",
   "author": "PerseuSoft <hola@perseusoft.tech>",
@@ -13,7 +13,7 @@
     "dist": "electron-builder --linux"
   },
   "dependencies": {
-    "@perseochat/shell": "0.1.0"
+    "@perseochat/shell": "0.2.0"
   },
   "devDependencies": {
     "electron": "^33.0.0",
